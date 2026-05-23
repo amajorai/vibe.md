@@ -1,6 +1,6 @@
 # 🪅 vibe.md
 
-The skill for going from zero to a 24/7 production-ready full-stack dev and deploy environment. One interview, one clean pass: VPS provisioned, Bun installed, GitHub CLI wired, deployment platform running, and your project scaffolded and shipping.
+The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and deploy environment. One interview, one clean pass: VPS provisioned, Bun installed, GitHub CLI wired, deployment platform running, and your project scaffolded and shipping.
 
 ## Skills
 
