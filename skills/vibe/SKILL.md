@@ -11,7 +11,17 @@ You are setting up the ultimate vibe coding environment. Start with a short inte
 **Project:** {{args}}
 
 
-## Phase 0: Environment Detection
+## Phase 0: Auto-Update
+
+*Skip if `{{args}}` contains `--no-update`, or if `SKILLS_AUTO_UPDATE: false` is set in your project CLAUDE.md.*
+
+```bash
+npx skills update vibe -y
+```
+
+If the skill was updated, stop here and tell the user: **"This skill was just updated. Re-run your command to use the new version."** Otherwise continue silently.
+
+## Phase 1: Environment Detection
 
 First, silently check the environment:
 
@@ -29,7 +39,7 @@ Determine:
 Confirm with the user: "I see you're on [local machine / a server]. Is that right?"
 
 
-## Phase 1: Interview: Lock In All Choices
+## Phase 2: Interview: Lock In All Choices
 
 Ask all questions up front in a single message. Do not start any installation until answers are confirmed.
 
@@ -64,7 +74,7 @@ Ask all questions up front in a single message. Do not start any installation un
 Once the user answers, proceed to the appropriate phases below.
 
 
-## Phase 2A: Provision a VPS (local machine only)
+## Phase 3A: Provision a VPS (local machine only)
 
 Install the chosen cloud provider CLI, then spin up a server.
 
@@ -133,7 +143,7 @@ aws ec2 describe-instances \
 SSH into the server, then continue to Phase 2B.
 
 
-## Phase 2B: Server Setup
+## Phase 3B: Server Setup
 
 You are now on the VPS. Run all steps in order.
 
@@ -234,7 +244,7 @@ aws configure
 ```
 
 
-## Phase 3: Scaffold the Project
+## Phase 4: Scaffold the Project
 
 ```bash
 bun create better-t-stack@latest {{args}}
@@ -257,7 +267,7 @@ gh repo create {{args}} --public --source=. --remote=origin --push
 ```
 
 
-## Phase 4: Spec-Driven Development
+## Phase 5: Spec-Driven Development
 
 Every feature starts as a GitHub issue. This is the core loop.
 
@@ -296,7 +306,7 @@ gh pr create --title "feat: <name>" --body "Closes #<issue-number>"
 ```
 
 
-## Phase 5: Deploy
+## Phase 6: Deploy
 
 ### Via Dokploy CLI
 
@@ -344,7 +354,7 @@ wrangler secret put DATABASE_URL
 ```
 
 
-## Phase 6: Scale: Spin Up More Servers (orchestrator only)
+## Phase 7: Scale: Spin Up More Servers (orchestrator only)
 
 ```bash
 # Hetzner: new worker node
