@@ -5,7 +5,7 @@ The end-to-end skill for spinning up a production-ready full-stack dev and deplo
 ## Skills
 
 | Skill | What it does |
-|-------|-------------|
+|-------|------------------------------------------------------------------------------------------------------|
 | [`/vibe`](skills/vibe/SKILL.md) | Interview-driven full-stack setup. Detects local vs. server, provisions a VPS (Hetzner/OVH/AWS), installs Bun + GitHub CLI + Dokploy/Coolify, scaffolds a Better T Stack project, and wires up auto-deploy |
 
 ## What gets set up
