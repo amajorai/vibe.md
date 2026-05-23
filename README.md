@@ -14,7 +14,7 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 - **Runtime**: Bun on the server
 - **Source control**: GitHub CLI authenticated
 - **Deployment platform**: Dokploy or Coolify (or both), with CLI authenticated and webhook configured
-- **Edge**: Wrangler (optional, for Cloudflare Workers/Pages)
+- **Edge**: Wrangler (optional, for Cloudflare Workers, Pages, and DNS)
 - **Project**: Better T Stack scaffolded and pushed to GitHub
 - **Workflow**: spec → `/ship` → PR → auto-deploy
 
