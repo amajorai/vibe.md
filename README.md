@@ -8,6 +8,16 @@ The end-to-end skill for spinning up a production-ready full-stack dev and deplo
 |-------|-------------|
 | [`/vibe`](skills/vibe/SKILL.md) | Interview-driven full-stack setup. Detects local vs. server, provisions a VPS (Hetzner/OVH/AWS), installs Bun + GitHub CLI + Dokploy/Coolify, scaffolds a Better T Stack project, and wires up auto-deploy |
 
+## What gets set up
+
+- **Cloud provider** — Hetzner, OVH, or AWS (your choice, with CLI provisioned)
+- **Runtime** — Bun on the server
+- **Source control** — GitHub CLI authenticated
+- **Deployment platform** — Dokploy or Coolify (or both), with CLI authenticated and webhook configured
+- **Edge** — Wrangler (optional, for Cloudflare Workers/Pages)
+- **Project** — Better T Stack scaffolded and pushed to GitHub
+- **Workflow** — spec → `/ship` → PR → auto-deploy
+
 ## Quickstart
 
 ```bash
@@ -22,16 +32,6 @@ npx skills add amajorai/vibe.md
 ```
 
 Invoke as `/vibemd:vibe <project name>`.
-
-## What gets set up
-
-- **Cloud provider** — Hetzner, OVH, or AWS (your choice, with CLI provisioned)
-- **Runtime** — Bun on the server
-- **Source control** — GitHub CLI authenticated
-- **Deployment platform** — Dokploy or Coolify (or both), with CLI authenticated and webhook configured
-- **Edge** — Wrangler (optional, for Cloudflare Workers/Pages)
-- **Project** — Better T Stack scaffolded and pushed to GitHub
-- **Workflow** — spec → `/ship` → PR → auto-deploy
 
 ---
 
