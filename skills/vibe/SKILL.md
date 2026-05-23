@@ -29,7 +29,7 @@ Determine:
 Confirm with the user: "I see you're on [local machine / a server]. Is that right?"
 
 
-## Phase 1: Interview — Lock In All Choices
+## Phase 1: Interview: Lock In All Choices
 
 Ask all questions up front in a single message. Do not start any installation until answers are confirmed.
 
@@ -43,22 +43,22 @@ Ask all questions up front in a single message. Do not start any installation un
 > - [ ] Already on a server (skip provisioning)
 >
 > **2. Which cloud provider do you want?**
-> - [ ] Hetzner Cloud — cheapest, EU-based (~€4/mo for CX22). Best default.
-> - [ ] OVH — good value, global PoPs
-> - [ ] AWS — most ecosystem, free tier (t3.micro)
+> - [ ] Hetzner Cloud: cheapest, EU-based (~€4/mo for CX22). Best default.
+> - [ ] OVH: good value, global PoPs
+> - [ ] AWS: most ecosystem, free tier (t3.micro)
 > - [ ] I already have a server (skip provisioning)
 >
 > **3. Which deployment platform do you want?**
-> - [ ] Dokploy — lightweight, Docker-native, self-hosted PaaS
-> - [ ] Coolify — more features, great UI, self-hosted Heroku alternative
+> - [ ] Dokploy: lightweight, Docker-native, self-hosted PaaS
+> - [ ] Coolify: more features, great UI, self-hosted Heroku alternative
 > - [ ] Both (Dokploy for apps, Coolify for databases/services)
 >
 > **4. What role should this server play?**
-> - [ ] Root orchestrator — manages deployments AND can spin up more servers (install cloud CLIs)
-> - [ ] Standalone app server — just runs my app
+> - [ ] Root orchestrator: manages deployments AND can spin up more servers (install cloud CLIs)
+> - [ ] Standalone app server: just runs my app
 >
 > **5. Deploy to edge as well?**
-> - [ ] Yes — install Wrangler (Cloudflare Workers / Pages)
+> - [ ] Yes: install Wrangler (Cloudflare Workers / Pages)
 > - [ ] No
 
 Once the user answers, proceed to the appropriate phases below.
@@ -100,7 +100,7 @@ ovhcloud login
 
 # List available VPS plans and order one
 ovhcloud vps list
-# Then provision via OVH Control Panel or API — CLI provisioning varies by account type
+# Then provision via OVH Control Panel or API: CLI provisioning varies by account type
 ```
 
 ### AWS
@@ -209,7 +209,7 @@ coolify context set-token self-hosted <YOUR_COOLIFY_TOKEN> \
 bun add -g wrangler
 wrangler --version
 wrangler login
-# Opens browser — log in with your Cloudflare account
+# Opens browser: log in with your Cloudflare account
 ```
 
 ### Step 6: Cloud CLIs for Orchestration (root orchestrator only)
@@ -280,7 +280,7 @@ gh issue create \
 
 ### Implement
 
-Use `/ship <issue description or URL>` — runs the full implement → verify → simplify → security review cycle.
+Use `/ship <issue description or URL>` - runs the full implement → verify → simplify → security review cycle.
 
 For multiple issues in parallel:
 ```bash
@@ -344,7 +344,7 @@ wrangler secret put DATABASE_URL
 ```
 
 
-## Phase 6: Scale — Spin Up More Servers (orchestrator only)
+## Phase 6: Scale: Spin Up More Servers (orchestrator only)
 
 ```bash
 # Hetzner: new worker node
