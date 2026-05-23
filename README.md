@@ -8,7 +8,7 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 |-------|------------------------------------------------------------------------------------------------------|
 | [`/vibe`](skills/vibe/SKILL.md) | Interview-driven full-stack setup. Detects local vs. server, provisions a VPS (Hetzner/OVH/AWS), installs Bun + GitHub CLI + Dokploy/Coolify, scaffolds a Better T Stack project, and wires up auto-deploy |
 
-## What gets set up
+## Tech Stack
 
 - **Cloud provider**: Hetzner, OVH, or AWS (your choice, with CLI provisioned)
 - **Runtime**: Bun on the server
@@ -23,6 +23,12 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 ```bash
 npx skills add amajorai/vibe.md
 ```
+
+### Auto-Update
+
+`/vibe` runs `npx skills update vibe -y` at the start of each invocation and updates itself if a new version is available, then asks you to re-run.
+
+To opt out, add `--no-update` to your command or set `SKILLS_AUTO_UPDATE: false` in your project CLAUDE.md.
 
 ### Claude Code plugin
 
