@@ -68,7 +68,7 @@ Ask all questions up front in a single message. Do not start any installation un
 > - [ ] Standalone app server: just runs my app
 >
 > **5. Deploy to edge as well?**
-> - [ ] Yes: install Wrangler (Cloudflare Workers / Pages)
+> - [ ] Yes: install Wrangler (Cloudflare Workers, Pages, and DNS)
 > - [ ] No
 
 Once the user answers, proceed to the appropriate phases below.
@@ -348,6 +348,10 @@ wrangler deploy
 
 # Pages
 wrangler pages deploy ./dist --project-name={{args}}
+
+# DNS records
+wrangler dns record list --zone <ZONE_ID>
+wrangler dns record create --zone <ZONE_ID> --type A --name {{args}} --content <SERVER_IP> --proxied
 
 # Secrets
 wrangler secret put DATABASE_URL
