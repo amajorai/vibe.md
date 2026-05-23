@@ -1,4 +1,4 @@
-# vibe.md
+# 🪅 vibe.md
 
 The end-to-end skill for spinning up a production-ready full-stack dev and deploy environment. One interview, one clean pass — VPS provisioned, Bun installed, GitHub CLI wired, deployment platform (Dokploy or Coolify) running, and your Better T Stack project scaffolded and deployed.
 
