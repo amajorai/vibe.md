@@ -286,7 +286,7 @@ If not installed, ask the user: **"Would you like me to install the `ship` skill
 
 If yes:
 ```bash
-npx skills add ship
+npx skills add amajorai/ship.md
 ```
 
 ---
@@ -305,7 +305,7 @@ Ask the user: **"Would you like me to install and run the `hardening` skill to l
 
 If yes:
 ```bash
-npx skills add hardening
+npx skills add amajorai/skills/skills/hardening
 ```
 
 Then invoke `/hardening` to begin the server hardening interview.
