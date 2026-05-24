@@ -1,14 +1,14 @@
 ---
 name: vibe
-description: "Ultimate vibe coding setup. Interview-driven, no-friction full-stack dev and deployment. Asks the user upfront which cloud provider (Hetzner/OVH/AWS) and deployment platform (Dokploy/Coolify) they want, then fully installs and configures the chosen stack: Better T Stack, GitHub CLI, Wrangler, and all relevant CLIs. Detects local vs. server environment automatically."
-argument-hint: [project name or description]
+description: "Server setup skill. Detects local vs. remote environment. If local, provisions a VPS on the chosen cloud provider. If already on a server, asks whether this is an orchestrator (manages more servers) or a standalone master (everything on one machine, like Coolify). Installs Bun, GitHub CLI, Dokploy/Coolify, and optional Wrangler. Ends by offering to install the ship and hardening skills."
+argument-hint: [optional flags]
 ---
 
 # Vibe
 
-You are setting up the ultimate vibe coding environment. Start with a short interview to lock in all decisions, then execute the setup in one clean pass.
+You are setting up a production server environment. Interview first, execute in one clean pass.
 
-**Project:** {{args}}
+**Args:** {{args}}
 
 
 ## Phase 0: Auto-Update
@@ -23,7 +23,7 @@ If the skill was updated, stop here and tell the user: **"This skill was just up
 
 ## Phase 1: Environment Detection
 
-First, silently check the environment:
+Silently detect the environment:
 
 ```bash
 uname -a && cat /etc/os-release 2>/dev/null || sw_vers 2>/dev/null
@@ -33,55 +33,62 @@ echo "USER=$USER HOME=$HOME"
 ```
 
 Determine:
-- **Local dev machine** (macOS, Windows, desktop Linux with GUI): → need to provision a VPS first
-- **Already on a VPS / headless server**: → skip straight to setup
+- **Local dev machine** (macOS, Windows, desktop Linux with GUI): need to provision a VPS first
+- **Already on a VPS / headless server**: skip straight to server setup
 
-Confirm with the user: "I see you're on [local machine / a server]. Is that right?"
-
-
-## Phase 2: Interview: Lock In All Choices
-
-Ask all questions up front in a single message. Do not start any installation until answers are confirmed.
+Tell the user: "I see you're on [local machine / a server]. Is that right?"
 
 
-**Ask the user:**
+## Phase 2: Interview
 
-> Let's configure your vibe stack. Answer these and I'll set everything up:
+Ask all questions in a single message. Do not start any installation until answers are confirmed.
+
+### If local machine:
+
+> You're on a local machine. I'll provision a cloud server for you, then set it up.
 >
-> **1. Where are you running this?**
-> - [ ] Local dev machine (I need to provision a VPS)
-> - [ ] Already on a server (skip provisioning)
+> **1. Which cloud provider?**
+> - [ ] Hetzner Cloud — cheapest, EU-based (~€4/mo for CX22). Best default.
+> - [ ] OVH — good value, global PoPs
+> - [ ] AWS — most ecosystem, free tier (t3.micro)
+> - [ ] I already have a server (give me the IP and I'll skip provisioning)
 >
-> **2. Which cloud provider do you want?**
-> - [ ] Hetzner Cloud: cheapest, EU-based (~€4/mo for CX22). Best default.
-> - [ ] OVH: good value, global PoPs
-> - [ ] AWS: most ecosystem, free tier (t3.micro)
-> - [ ] I already have a server (skip provisioning)
->
-> **3. Which deployment platform do you want?**
-> - [ ] Dokploy: lightweight, Docker-native, self-hosted PaaS
-> - [ ] Coolify: more features, great UI, self-hosted Heroku alternative
+> **2. Which deployment platform?**
+> - [ ] Dokploy — lightweight, Docker-native, self-hosted PaaS
+> - [ ] Coolify — more features, great UI, self-hosted Heroku alternative
 > - [ ] Both (Dokploy for apps, Coolify for databases/services)
 >
-> **4. What role should this server play?**
-> - [ ] Root orchestrator: manages deployments AND can spin up more servers (install cloud CLIs)
-> - [ ] Standalone app server: just runs my app
->
-> **5. Deploy to edge as well?**
-> - [ ] Yes: install Wrangler (Cloudflare Workers, Pages, and DNS)
+> **3. Deploy to edge as well?**
+> - [ ] Yes — install Wrangler (Cloudflare Workers, Pages, DNS)
 > - [ ] No
 
-Once the user answers, proceed to the appropriate phases below.
+### If already on a server:
+
+> You're already on a server. How should it be configured?
+>
+> **1. What role does this server play?**
+> - [ ] **Master/standalone** — everything runs here. One machine to rule them all (like a single-machine Coolify setup). No need to manage other servers.
+> - [ ] **Orchestrator** — this is the control plane. It manages deployments AND can provision and connect more worker servers as needed.
+>
+> **2. Which deployment platform?**
+> - [ ] Dokploy — lightweight, Docker-native, self-hosted PaaS
+> - [ ] Coolify — more features, great UI, self-hosted Heroku alternative
+> - [ ] Both (Dokploy for apps, Coolify for databases/services)
+>
+> **3. Deploy to edge as well?**
+> - [ ] Yes — install Wrangler (Cloudflare Workers, Pages, DNS)
+> - [ ] No
+
+Once the user answers, proceed to the appropriate phases.
 
 
 ## Phase 3A: Provision a VPS (local machine only)
 
-Install the chosen cloud provider CLI, then spin up a server.
+Install the chosen cloud provider CLI and spin up a server.
 
 ### Hetzner
 
 ```bash
-# Install hcloud CLI
 curl -fsSL https://github.com/hetznercloud/cli/releases/latest/download/hcloud-linux-amd64.tar.gz | tar xz
 sudo mv hcloud /usr/local/bin/ && hcloud version
 
@@ -90,13 +97,13 @@ hcloud context create vibe
 
 # Provision server
 hcloud server create \
-  --name vibe-root \
+  --name vibe-server \
   --type cx22 \
   --image ubuntu-24.04 \
   --location nbg1 \
   --ssh-key ~/.ssh/id_rsa.pub
 
-SERVER_IP=$(hcloud server ip vibe-root)
+SERVER_IP=$(hcloud server ip vibe-server)
 echo "Server ready at $SERVER_IP"
 ssh root@$SERVER_IP
 ```
@@ -104,48 +111,45 @@ ssh root@$SERVER_IP
 ### OVH
 
 ```bash
-# Install ovhcloud CLI
 curl -fsSL https://raw.githubusercontent.com/ovh/ovhcloud-cli/main/install.sh | sh
 ovhcloud login
 
 # List available VPS plans and order one
 ovhcloud vps list
-# Then provision via OVH Control Panel or API: CLI provisioning varies by account type
+# Provision via OVH Control Panel or API
 ```
 
 ### AWS
 
 ```bash
-# Install AWS CLI v2
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip && sudo ./aws/install && aws --version
 
-# Authenticate
 aws configure
 # Enter: Access Key ID, Secret Access Key, region (e.g. us-east-1), output format (json)
 
-# Launch t3.small
 aws ec2 run-instances \
   --image-id ami-0c7217cdde317cfec \
   --instance-type t3.small \
   --key-name <YOUR_KEY_PAIR> \
   --security-group-ids <YOUR_SG_ID> \
   --count 1 \
-  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=vibe-root}]'
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=vibe-server}]'
 
-# Get IP
-aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=vibe-root" \
+SERVER_IP=$(aws ec2 describe-instances \
+  --filters "Name=tag:Name,Values=vibe-server" \
   --query 'Reservations[0].Instances[0].PublicIpAddress' \
-  --output text
+  --output text)
+echo "Server ready at $SERVER_IP"
+ssh ubuntu@$SERVER_IP
 ```
 
-SSH into the server, then continue to Phase 2B.
+SSH into the server, then continue to Phase 3B.
 
 
 ## Phase 3B: Server Setup
 
-You are now on the VPS. Run all steps in order.
+Run all steps in order on the server.
 
 ### Step 1: System baseline
 
@@ -174,41 +178,34 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githu
 
 apt-get update && apt-get install -y gh
 gh auth login
-# GitHub.com → HTTPS → paste a personal access token (classic, with repo + workflow scopes)
+# GitHub.com → HTTPS → paste a personal access token (classic, repo + workflow scopes)
 ```
 
 ### Step 4: Install Deployment Platform
 
-**Dokploy** (chosen or both):
+**Dokploy** (if chosen):
 
 ```bash
-# Install Dokploy (Docker-based, self-hosted PaaS)
 curl -sSL https://dokploy.com/install.sh | sh
 echo "Dokploy UI → http://$(curl -s ifconfig.me):3000"
 
-# Install Dokploy CLI
 bun add -g @dokploy/cli
 dokploy --version
 
 # Authenticate CLI (get API key from Dokploy UI → Settings → API)
 dokploy auth -u http://localhost:3000 -t <YOUR_DOKPLOY_API_KEY>
-# Or use env vars: DOKPLOY_URL and DOKPLOY_API_KEY
 ```
 
-**Coolify** (chosen or both):
+**Coolify** (if chosen):
 
 ```bash
-# Install Coolify (self-hosted Heroku alternative)
 curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash
 echo "Coolify UI → http://$(curl -s ifconfig.me):8000"
 
 # Install Coolify CLI
-# Linux/macOS via Go:
 go install github.com/coollabsio/coolify-cli/coolify@latest
-# Or macOS via Homebrew:
-# brew install coollabsio/coolify-cli/coolify-cli
 
-# Authenticate CLI (get token from Coolify UI → Security → API Tokens)
+# Authenticate (get token from Coolify UI → Security → API Tokens)
 coolify context set-token self-hosted <YOUR_COOLIFY_TOKEN> \
   --url http://localhost:8000
 ```
@@ -219,12 +216,11 @@ coolify context set-token self-hosted <YOUR_COOLIFY_TOKEN> \
 bun add -g wrangler
 wrangler --version
 wrangler login
-# Opens browser: log in with your Cloudflare account
 ```
 
-### Step 6: Cloud CLIs for Orchestration (root orchestrator only)
+### Step 6: Cloud CLI for Orchestration (orchestrator role only)
 
-Install the same provider CLI chosen in Phase 2A on this server so it can spin up more nodes:
+Install the same provider CLI on this server so it can provision more nodes:
 
 ```bash
 # Hetzner
@@ -243,125 +239,10 @@ unzip awscliv2.zip && ./aws/install
 aws configure
 ```
 
-
-## Phase 4: Scaffold the Project
-
-```bash
-bun create better-t-stack@latest {{args}}
-cd {{args}}
-
-# CLI will prompt:
-# - Frontend: Next.js or TanStack Router
-# - Backend: tRPC or Hono
-# - Database: SQLite (libsql), PostgreSQL, or MySQL
-# - Auth: Better Auth or none
-# - Add-ons: Tailwind, Shadcn, PWA, Biome, etc.
-
-bun install
-```
-
-Create the GitHub repo:
+To register a new worker node with the deployment platform:
 
 ```bash
-gh repo create {{args}} --public --source=. --remote=origin --push
-```
-
-
-## Phase 5: Spec-Driven Development
-
-Every feature starts as a GitHub issue. This is the core loop.
-
-### Create a spec issue
-
-```bash
-gh issue create \
-  --title "feat: <feature name>" \
-  --body "## Goal
-<what this achieves for the user>
-
-## Acceptance Criteria
-- [ ] <criterion 1>
-- [ ] <criterion 2>
-- [ ] <criterion 3>
-
-## Out of scope
-- <what we are NOT doing>"
-```
-
-### Implement
-
-Use `/ship <issue description or URL>` - runs the full implement → verify → simplify → security review cycle.
-
-For multiple issues in parallel:
-```bash
-gh issue list --label "ready" --json number,title,body
-# Feed to /batch for parallel worktree execution
-```
-
-### PR + auto-deploy
-
-```bash
-gh pr create --title "feat: <name>" --body "Closes #<issue-number>"
-# Merge → deployment platform auto-deploys via webhook
-```
-
-
-## Phase 6: Deploy
-
-### Via Dokploy CLI
-
-```bash
-# List projects
-dokploy project all
-
-# Deploy an existing application
-dokploy application deploy --applicationId <APP_ID>
-
-# Create a new application linked to your repo
-dokploy application create \
-  --projectId <PROJECT_ID> \
-  --name {{args}} \
-  --buildType nixpacks
-
-# Check status
-dokploy application one --applicationId <APP_ID>
-```
-
-### Via Coolify CLI
-
-```bash
-# List applications
-coolify list applications
-
-# Trigger a deployment
-coolify deploy application <APP_UUID>
-
-# Check logs
-coolify logs application <APP_UUID>
-```
-
-### Via Wrangler (edge)
-
-```bash
-# Workers
-wrangler deploy
-
-# Pages
-wrangler pages deploy ./dist --project-name={{args}}
-
-# DNS records
-wrangler dns record list --zone <ZONE_ID>
-wrangler dns record create --zone <ZONE_ID> --type A --name {{args}} --content <SERVER_IP> --proxied
-
-# Secrets
-wrangler secret put DATABASE_URL
-```
-
-
-## Phase 7: Scale: Spin Up More Servers (orchestrator only)
-
-```bash
-# Hetzner: new worker node
+# Hetzner: spin up a new worker
 hcloud server create \
   --name vibe-worker-$(date +%s) \
   --type cx22 \
@@ -373,30 +254,58 @@ hcloud server create \
 ```
 
 
-## Daily Workflow Cheat Sheet
-
-```
-gh issue create --title "feat: X"      # spec it
-/ship <issue description>               # build it  
-gh pr create                            # review it
-# merge → auto-deploy fires             # ship it
-wrangler deploy                         # or push to edge
-dokploy application deploy --applicationId <ID>   # or trigger manually
-coolify deploy application <UUID>       # or via Coolify
-```
-
-
 ## Completion Checklist
 
 - [ ] Environment detected and confirmed
-- [ ] Provider chosen and CLI authenticated
-- [ ] VPS provisioned (if starting from local)
-- [ ] Bun + GitHub CLI installed on server
+- [ ] VPS provisioned and SSH'd into (if starting from local)
+- [ ] System packages updated
+- [ ] Bun installed
+- [ ] GitHub CLI installed and authenticated
 - [ ] Deployment platform installed (Dokploy / Coolify / both) + CLI authenticated
 - [ ] Wrangler installed and logged in (if edge)
-- [ ] Cloud CLI on server for orchestration (if orchestrator mode)
-- [ ] Better T Stack project scaffolded
-- [ ] GitHub repo created and linked
-- [ ] Deployment webhook configured (auto-deploy on merge to main)
-- [ ] First spec issue created
-- [ ] End-to-end deploy tested
+- [ ] Cloud CLI on server for orchestration (if orchestrator role)
+
+
+## Final Step: Optional Skills
+
+The server is ready. Two more things I can set up for you:
+
+---
+
+### 1. Install the `ship` skill?
+
+The `ship` skill gives you a full-cycle development workflow: implement → verify → edge cases → tests → security review. Use it to build and ship features fast.
+
+Check if it's already installed:
+
+```bash
+npx skills list 2>/dev/null | grep -q "^ship" && echo "ALREADY_INSTALLED" || echo "NOT_INSTALLED"
+```
+
+If not installed, ask the user: **"Would you like me to install the `ship` skill? It enables `/ship <feature>` for full-cycle development."**
+
+If yes:
+```bash
+npx skills add ship
+```
+
+---
+
+### 2. Install and run the `hardening` skill?
+
+The `hardening` skill secures this server: SSH hardening, fail2ban, UFW firewall, unattended upgrades, AppArmor, and more.
+
+Check if it's already installed:
+
+```bash
+npx skills list 2>/dev/null | grep -q "^hardening" && echo "ALREADY_INSTALLED" || echo "NOT_INSTALLED"
+```
+
+Ask the user: **"Would you like me to install and run the `hardening` skill to lock down this server?"**
+
+If yes:
+```bash
+npx skills add hardening
+```
+
+Then invoke `/hardening` to begin the server hardening interview.
