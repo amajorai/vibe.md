@@ -6,6 +6,7 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 
 - 📦 **[ship.md](https://github.com/amajorai/ship.md)** to build features with a quality-gated pipeline once your environment is running: interview → explore → plan → implement → verify.
 - 🎉 **[party.md](https://github.com/amajorai/party.md)** to keep building autonomously 24/7. GitHub Projects as your interface; drop in issues and the agent ships them while you sleep.
+- ⚡ **[amajorai/skills](https://github.com/amajorai/skills)** for edge cases, E2E, payments, auth, SEO, icons, CI, observability, and 20+ more.
 
 ## Skills
 
@@ -44,4 +45,3 @@ Invoke as `/vibemd:vibe <project name>`.
 
 ---
 
-More Claude Code skills at **[amajorai/skills](https://github.com/amajorai/skills)**: edge cases, E2E, payments, auth, SEO, icons, CI, observability, and 20+ more.
