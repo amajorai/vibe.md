@@ -2,6 +2,11 @@
 
 The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and deploy environment. One interview, one clean pass: VPS provisioned, Bun installed, GitHub CLI wired, deployment platform running, and your project scaffolded and shipping.
 
+## Works great with
+
+- 📦 **[ship.md](https://github.com/amajorai/ship.md)** to build features with a quality-gated pipeline once your environment is running: interview → explore → plan → implement → verify.
+- 🌈 **[rainbow.md](https://github.com/amajorai/rainbow.md)** to keep building autonomously 24/7. GitHub Projects as your interface; drop in issues and the agent ships them while you sleep.
+
 ## Skills
 
 | Skill | What it does |
@@ -36,12 +41,6 @@ npx skills add amajorai/vibe.md
 ```
 
 Invoke as `/vibemd:vibe <project name>`.
-
----
-
-## Ready to ship features?
-
-Once your environment is running, use **[ship.md](https://github.com/amajorai/ship.md)** to build features with a structured workflow. It wraps Claude Code's built-in commands into a quality-gated pipeline — interview, explore, plan, implement, verify — with optional GitHub issue tracking and PR creation baked in.
 
 ---
 
