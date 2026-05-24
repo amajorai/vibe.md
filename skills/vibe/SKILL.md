@@ -270,8 +270,6 @@ hcloud server create \
 
 The server is ready. Two more things I can set up for you:
 
----
-
 ### 1. Install the `ship` skill?
 
 The `ship` skill gives you a full-cycle development workflow: implement → verify → edge cases → tests → security review. Use it to build and ship features fast.
@@ -288,8 +286,6 @@ If yes:
 ```bash
 npx skills add amajorai/ship.md
 ```
-
----
 
 ### 2. Install and run the `hardening` skill?
 
