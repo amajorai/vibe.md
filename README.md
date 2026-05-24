@@ -42,6 +42,3 @@ npx skills add amajorai/vibe.md
 ```
 
 Invoke as `/vibemd:vibe <project name>`.
-
----
-
