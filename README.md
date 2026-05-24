@@ -26,9 +26,7 @@ npx skills add amajorai/vibe.md
 
 ### Auto-Update
 
-`/vibe` runs `npx skills update vibe -y` at the start of each invocation and updates itself if a new version is available, then asks you to re-run.
-
-To opt out, add `--no-update` to your command or set `SKILLS_AUTO_UPDATE: false` in your project CLAUDE.md.
+`/vibe` can update itself before running. Auto-update is opt-in: pass `--update` to your command or set `SKILLS_AUTO_UPDATE: true` in your project CLAUDE.md, and it runs `npx skills update vibe -y` at the start of the invocation, then asks you to re-run if a new version was installed.
 
 ### Claude Code plugin
 
