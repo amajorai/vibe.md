@@ -517,52 +517,34 @@ The server is ready. Two more things I can set up for you:
 
 The `ship` skill gives you a full-cycle development workflow: implement → verify → edge cases → tests → security review. Use it to build and ship features fast.
 
-Check if it's already installed. This must not hang: `skills` may not be on the
-machine at all, in which case `npx` would otherwise try to download it. Time-box
-the check and treat any failure as "not installed" so the flow always continues:
+Check if it's already installed (`npx skills` is on-demand — no global install required):
 
 ```bash
-# Returns ALREADY_INSTALLED only on a clean match; any error/timeout/missing CLI
-# falls through to NOT_INSTALLED.
-if command -v skills >/dev/null 2>&1; then LIST="skills list"; else LIST="npx --no-install skills list"; fi
-if $LIST 2>/dev/null | grep -qE '^ship$'; then
-  echo "ALREADY_INSTALLED"
-else
-  echo "NOT_INSTALLED"
-fi
+npx --yes skills list 2>/dev/null | grep -qE '^ship$' && echo "ALREADY_INSTALLED" || echo "NOT_INSTALLED"
 ```
-
-`npx --no-install` will not silently download the `skills` package; if it is not
-already cached, the command simply fails and we report NOT_INSTALLED.
 
 If not installed, ask the user: **"Would you like me to install the `ship` skill? It enables `/ship <feature>` for full-cycle development."**
 
 If yes:
 ```bash
-npx skills add amajorai/ship.md
+npx --yes skills add amajorai/ship.md -a claude-code -y
 ```
 
 ### 2. Install and run the `hardening` skill?
 
 The `hardening` skill secures this server: SSH hardening, fail2ban, UFW firewall, unattended upgrades, AppArmor, and more.
 
-Check if it's already installed (same time-boxed pattern as above — never let a
-missing `skills` CLI hang or auto-download):
+Check if it's already installed:
 
 ```bash
-if command -v skills >/dev/null 2>&1; then LIST="skills list"; else LIST="npx --no-install skills list"; fi
-if $LIST 2>/dev/null | grep -qE '^hardening$'; then
-  echo "ALREADY_INSTALLED"
-else
-  echo "NOT_INSTALLED"
-fi
+npx --yes skills list 2>/dev/null | grep -qE '^hardening$' && echo "ALREADY_INSTALLED" || echo "NOT_INSTALLED"
 ```
 
 Ask the user: **"Would you like me to install and run the `hardening` skill to lock down this server?"**
 
 If yes:
 ```bash
-npx skills add amajorai/skills/skills/hardening
+npx --yes skills add amajorai/skills/skills/hardening -a claude-code -y
 ```
 
 A newly added skill is not picked up by the current Claude Code session. Tell the user exactly how to run it:

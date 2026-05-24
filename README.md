@@ -39,4 +39,10 @@ Invoke as `/vibemd:vibe <project name>`.
 
 ---
 
+## Ready to ship features?
+
+Once your environment is running, use **[ship.md](https://github.com/amajorai/ship.md)** to build features with a structured workflow. It wraps Claude Code's built-in commands into a quality-gated pipeline — interview, explore, plan, implement, verify — with optional GitHub issue tracking and PR creation baked in.
+
+---
+
 Part of [amajorai/skills](https://github.com/amajorai/skills). For more skills check out the full collection.
