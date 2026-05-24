@@ -1,5 +1,10 @@
 # 🪅 vibe.md
 
+[![Stars](https://shieldcn.dev/github/stars/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md)
+[![Forks](https://shieldcn.dev/github/forks/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md)
+[![License](https://shieldcn.dev/github/license/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md)
+[![Issues](https://shieldcn.dev/github/issues/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md/issues)
+
 The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and deploy environment. One interview, one clean pass: VPS provisioned, Bun installed, GitHub CLI wired, deployment platform running, and your project scaffolded and shipping.
 
 ## Works great with
@@ -41,3 +46,13 @@ npx skills add amajorai/vibe.md
 ```
 
 Invoke as `/vibemd:vibe <project name>`.
+
+## Star History
+
+<a href="https://www.star-history.com/#amajorai/vibe.md&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amajorai/vibe.md&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amajorai/vibe.md&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amajorai/vibe.md&type=Date" />
+ </picture>
+</a>
