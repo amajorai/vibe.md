@@ -2,6 +2,7 @@
 
 The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and deploy environment. One interview, one clean pass: VPS provisioned, Bun installed, GitHub CLI wired, deployment platform running, and your project scaffolded and shipping.
 
+[![Status](https://shieldcn.dev/badge/status-experimental-orange.svg)](https://github.com/amajorai/vibe.md)
 [![Stars](https://shieldcn.dev/github/stars/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md)
 [![Forks](https://shieldcn.dev/github/forks/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md)
 [![License](https://shieldcn.dev/github/license/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md)
