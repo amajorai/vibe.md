@@ -16,21 +16,91 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 
 ## Skills
 
-| Skill | What it does |
-|-------|--------------|
-| [`/vibe`](skills/vibemd/SKILL.md) | Full setup skill. Detects local vs. server, provisions a VPS (Hetzner/DigitalOcean/OVH/AWS) with region and size chosen from live CLI queries, installs Bun + GitHub CLI + Dokploy/Coolify + optional Wrangler + optional AI coding CLIs (Claude Code, Codex), and writes `/etc/vibemd/server.json`. Re-running on an already-configured server shows current state and offers next steps instead of re-running setup. |
-| [`/vibe-provision-worker`](skills/vibemd-provision-worker/SKILL.md) | Add a worker server to an existing orchestrator. Reads `/etc/vibemd/server.json` for provider, platform, and AI CLI preferences, spins up a new VPS, registers it with Dokploy or Coolify, optionally installs AI coding CLIs, and records the worker in the config. |
-| [`/vibe-reconfigure`](skills/vibemd-reconfigure/SKILL.md) | Change role, platform, or installed tools on an existing server. Detects current state from `/etc/vibemd/server.json` first and only applies the delta — switch master ↔ orchestrator, swap or add Dokploy/Coolify, install or remove Wrangler, and add or remove AI coding CLIs. Safe to run on a live server. |
+| Skill | When to use |
+|-------|-------------|
+| [`/vibe`](skills/vibemd/SKILL.md) | **First-time setup.** Run once per machine — from local or directly on a server. Provisions a VPS (if local), installs the full stack, and writes `/etc/vibemd/server.json`. Re-running on an already-configured server shows current state and offers next steps. |
+| [`/vibe-provision-worker`](skills/vibemd-provision-worker/SKILL.md) | **Add a worker to an existing orchestrator.** Run on an orchestrator after `/vibe` is done. Spins up a new VPS, registers it with Dokploy or Coolify, and records it in server config. |
+| [`/vibe-reconfigure`](skills/vibemd-reconfigure/SKILL.md) | **Change an existing server.** Run anytime after `/vibe` to switch role (master ↔ orchestrator), swap deployment platforms, or add/remove Wrangler and AI coding CLIs. Only applies the delta. |
+
+## How to use which skill
+
+```mermaid
+flowchart TD
+    A([Start]) --> B{Have you run /vibe\non this machine?}
+    B -->|No| C[/vibe\nFirst-time setup]
+    B -->|Yes| D{What do you need?}
+    D -->|Add more servers| E{Is this machine\nan orchestrator?}
+    D -->|Change role, platform,\nor installed tools| F[/vibe-reconfigure]
+    E -->|Yes| G[/vibe-provision-worker]
+    E -->|No| H[Run /vibe-reconfigure first\nswitch to orchestrator role\nthen /vibe-provision-worker]
+```
+
+## Setup flow
+
+```mermaid
+flowchart TD
+    A([/vibe]) --> B{Environment?}
+    B -->|Local machine| C[Choose cloud provider\nHetzner · DigitalOcean · OVH · AWS]
+    B -->|Already on a server| D{Choose server role}
+    C --> C1[Provision VPS\nregion + size from live CLI]
+    C1 --> D
+    D --> E{Role}
+    E -->|Master / standalone| F[Everything on one machine\nNo cloud CLI needed]
+    E -->|Orchestrator| G[Control plane\nCloud CLI installed\nCan provision workers]
+    F --> H[Choose deployment platform\nDokploy or Coolify]
+    G --> H
+    H --> I[Install Bun + GitHub CLI]
+    I --> J{Optional add-ons}
+    J --> J1[Wrangler — Cloudflare edge]
+    J --> J2[Claude Code / Codex CLI]
+    J1 & J2 --> K[Write /etc/vibemd/server.json]
+    K --> L([Server ready])
+    L --> M{Want more servers?}
+    M -->|Orchestrator role| N[/vibe-provision-worker\nRepeat per worker]
+    M -->|No| O([Done])
+```
+
+## Master vs Orchestrator
+
+The role you choose shapes the entire architecture:
+
+**Master / standalone** — the default for most teams. Everything (deployments, databases, services) runs on a single machine. Simpler to operate, lower cost, and sufficient for most production workloads. No cloud CLI is installed on the server.
+
+**Orchestrator** — a control plane that manages other servers. The cloud CLI (hcloud / doctl / aws) is installed on the orchestrator so it can spin up and register worker nodes via `/vibe-provision-worker`. Workers are registered in Dokploy or Coolify so the orchestrator can deploy to them. Use this when you need horizontal scale, isolated environments per app, or want separate build and runtime nodes.
+
+You can switch between roles at any time with `/vibe-reconfigure`.
+
+```mermaid
+flowchart LR
+    subgraph Master["Master (standalone)"]
+        direction TB
+        M1[Dokploy or Coolify]
+        M2[Your apps + DBs]
+        M3[Bun + GitHub CLI]
+        M1 --- M2 --- M3
+    end
+
+    subgraph Orchestrator["Orchestrator setup"]
+        direction TB
+        O[Orchestrator\nDokploy or Coolify\nCloud CLI]
+        W1[Worker 1]
+        W2[Worker 2]
+        W3[Worker N]
+        O -->|provisions + registers| W1
+        O -->|provisions + registers| W2
+        O -->|provisions + registers| W3
+    end
+```
 
 ## Tech Stack
 
-- **Cloud providers**: Hetzner, DigitalOcean, OVH, or AWS (your choice; region and server size chosen dynamically via live CLI queries after authentication)
+- **Cloud providers**: Hetzner, DigitalOcean, OVH, or AWS (region and server size chosen dynamically via live CLI queries after authentication)
 - **Runtime**: Bun on the server
 - **Source control**: GitHub CLI authenticated
 - **Deployment platform**: Dokploy or Coolify (or both), with CLI authenticated and webhook configured
 - **Edge**: Wrangler (optional, for Cloudflare Workers, Pages, and DNS)
 - **AI coding CLIs**: Claude Code (`@anthropic-ai/claude-code`) and/or Codex CLI (`@openai/codex`) — optional, installable on the server and/or on worker nodes
-- **Server config**: `/etc/vibemd/server.json` written on first setup; subsequent skill runs read this to show current state and skip re-provisioning
+- **Server config**: `/etc/vibemd/server.json` written on first setup; every subsequent skill reads this as source of truth
 
 ## Quickstart
 
