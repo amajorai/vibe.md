@@ -452,7 +452,7 @@ npx --yes skills list 2>/dev/null | grep -qE '^hunt$' && echo "ALREADY_INSTALLED
 
 Ask: **"Would you like me to install the `hunt` skill? It enables `/hunt <bug description>` for systematic debugging."**
 
-If yes: `npx --yes skills add amajorai/hunt.md -a claude-code -y`
+If yes: `npx --yes skills add amajorai/fix.md -a claude-code -y`
 
 - **Codex mode:** tell the user hunt is ready — invoke when needed.
-- **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session so `/hunt` becomes available."** Do not invoke it yourself.
+- **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session so `/fix` becomes available."** Do not invoke it yourself.

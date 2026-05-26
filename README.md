@@ -14,7 +14,7 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 ## Works great with
 
 - 📦 **[ship.md](https://github.com/amajorai/ship.md)** to build features with a quality-gated pipeline once your environment is running: explore → plan → implement → verify.
-- 🔎 **[hunt.md](https://github.com/amajorai/hunt.md)** to debug production issues — instruments code with targeted logs, reads them to confirm root cause, and makes a surgical fix.
+- 🔎 **[fix.md](https://github.com/amajorai/fix.md)** to debug production issues — instruments code with targeted logs, reads them to confirm root cause, and makes a surgical fix.
 - 🎉 **[party.md](https://github.com/amajorai/party.md)** to keep building autonomously 24/7. GitHub Projects as your interface; drop in issues and the agent ships them while you sleep.
 - 🎬 **[replay.md](https://github.com/amajorai/replay.md)** to record and share live video of your deployed app — auto-detects your vibe server for zero-setup cloud recording.
 - ⚡ **[amajorai/skills](https://github.com/amajorai/skills)** for edge cases, E2E, payments, auth, SEO, icons, CI, observability, and 20+ more.
