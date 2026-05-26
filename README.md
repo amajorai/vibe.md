@@ -26,37 +26,37 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 
 ```mermaid
 flowchart TD
-    A([Start]) --> B{Have you run /vibe\non this machine?}
-    B -->|No| C[/vibe\nFirst-time setup]
+    A([Start]) --> B{"Run /vibe on this machine yet?"}
+    B -->|No| C["/vibe"]
     B -->|Yes| D{What do you need?}
-    D -->|Add more servers| E{Is this machine\nan orchestrator?}
-    D -->|Change role, platform,\nor installed tools| F[/vibe-reconfigure]
-    E -->|Yes| G[/vibe-provision-worker]
-    E -->|No| H[Run /vibe-reconfigure first\nswitch to orchestrator role\nthen /vibe-provision-worker]
+    D -->|Add more servers| E{Orchestrator role?}
+    D -->|Change role or config| F["/vibe-reconfigure"]
+    E -->|Yes| G["/vibe-provision-worker"]
+    E -->|No| H["Reconfigure to orchestrator first,<br/>then /vibe-provision-worker"]
 ```
 
 ## Setup flow
 
 ```mermaid
 flowchart TD
-    A([/vibe]) --> B{Environment?}
-    B -->|Local machine| C[Choose cloud provider\nHetzner · DigitalOcean · OVH · AWS]
+    A(["/vibe"]) --> B{Environment?}
+    B -->|Local machine| C["Choose cloud provider<br/>Hetzner · DigitalOcean · OVH · AWS"]
     B -->|Already on a server| D{Choose server role}
-    C --> C1[Provision VPS\nregion + size from live CLI]
+    C --> C1["Provision VPS<br/>region + size from live CLI"]
     C1 --> D
     D --> E{Role}
-    E -->|Master / standalone| F[Everything on one machine\nNo cloud CLI needed]
-    E -->|Orchestrator| G[Control plane\nCloud CLI installed\nCan provision workers]
-    F --> H[Choose deployment platform\nDokploy or Coolify]
+    E -->|Master/standalone| F["Everything on one machine<br/>No cloud CLI needed"]
+    E -->|Orchestrator| G["Control plane<br/>Cloud CLI installed<br/>Can provision workers"]
+    F --> H["Choose deployment platform<br/>Dokploy or Coolify"]
     G --> H
-    H --> I[Install Bun + GitHub CLI]
+    H --> I["Install Bun + GitHub CLI"]
     I --> J{Optional add-ons}
-    J --> J1[Wrangler — Cloudflare edge]
-    J --> J2[Claude Code / Codex CLI]
-    J1 & J2 --> K[Write /etc/vibemd/server.json]
+    J --> J1["Wrangler — Cloudflare edge"]
+    J --> J2["Claude Code / Codex CLI"]
+    J1 & J2 --> K["Write /etc/vibemd/server.json"]
     K --> L([Server ready])
     L --> M{Want more servers?}
-    M -->|Orchestrator role| N[/vibe-provision-worker\nRepeat per worker]
+    M -->|Orchestrator role| N["/vibe-provision-worker<br/>Repeat per worker"]
     M -->|No| O([Done])
 ```
 
@@ -82,7 +82,7 @@ flowchart LR
 
     subgraph Orchestrator["Orchestrator setup"]
         direction TB
-        O[Orchestrator\nDokploy or Coolify\nCloud CLI]
+        O["Orchestrator<br/>Dokploy or Coolify<br/>Cloud CLI"]
         W1[Worker 1]
         W2[Worker 2]
         W3[Worker N]
