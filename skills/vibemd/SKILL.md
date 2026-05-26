@@ -441,3 +441,18 @@ If yes: `npx --yes skills add amajorai/party.md -a claude-code -y`
 
 - **Codex mode:** invoke `/party --setup` immediately.
 - **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session, then run `/party --setup`."** Do not invoke it yourself.
+
+### 4. Install the `hunt` skill?
+
+Systematic bug-hunting workflow. Instruments the codebase with targeted logging, reads the logs to confirm root cause, makes a surgical fix, and verifies clean. Use it when something is broken and you don't know why.
+
+```bash
+npx --yes skills list 2>/dev/null | grep -qE '^hunt$' && echo "ALREADY_INSTALLED" || echo "NOT_INSTALLED"
+```
+
+Ask: **"Would you like me to install the `hunt` skill? It enables `/hunt <bug description>` for systematic debugging."**
+
+If yes: `npx --yes skills add amajorai/hunt.md -a claude-code -y`
+
+- **Codex mode:** tell the user hunt is ready — invoke when needed.
+- **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session so `/hunt` becomes available."** Do not invoke it yourself.
