@@ -8,6 +8,9 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 [![License](https://shieldcn.dev/github/license/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md)
 [![Issues](https://shieldcn.dev/github/issues/amajorai/vibe.md.svg)](https://github.com/amajorai/vibe.md/issues)
 
+> [!NOTE]
+> These skills have been built and tested with **Claude Code**. Codex support is untested. If you try them on Codex, we'd love your help. [Open an issue](https://github.com/amajorai/vibe.md/issues) to share what works and what doesn't.
+
 ## Works great with
 
 - 📦 **[ship.md](https://github.com/amajorai/ship.md)** to build features with a quality-gated pipeline once your environment is running: interview → explore → plan → implement → verify.
