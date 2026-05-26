@@ -11,6 +11,27 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 > [!NOTE]
 > These skills have been built and tested with **Claude Code**. Codex support is untested. If you try them on Codex, we'd love your help. [Open an issue](https://github.com/amajorai/vibe.md/issues) to share what works and what doesn't.
 
+## Quickstart
+
+```bash
+npx skills add amajorai/vibe.md
+```
+
+### Update
+
+```bash
+npx skills update vibe -y
+```
+
+### Claude Code plugin
+
+```
+/plugin marketplace add amajorai/vibe.md
+/plugin install vibemd@amajorai
+```
+
+Invoke as `/vibemd:vibe`, `/vibemd:vibe-reconfigure`, or `/vibemd:vibe-provision-worker`.
+
 ## Works great with
 
 - 📦 **[ship.md](https://github.com/amajorai/ship.md)** to build features with a quality-gated pipeline once your environment is running: explore → plan → implement → verify.
@@ -106,27 +127,6 @@ flowchart LR
 - **Edge**: Wrangler (optional, for Cloudflare Workers, Pages, and DNS)
 - **AI coding CLIs**: Claude Code (`@anthropic-ai/claude-code`) and/or Codex CLI (`@openai/codex`) — optional, installable on the server and/or on worker nodes
 - **Server config**: `/etc/vibemd/server.json` written on first setup; every subsequent skill reads this as source of truth
-
-## Quickstart
-
-```bash
-npx skills add amajorai/vibe.md
-```
-
-### Update
-
-```bash
-npx skills update vibe -y
-```
-
-### Claude Code plugin
-
-```
-/plugin marketplace add amajorai/vibe.md
-/plugin install vibemd@amajorai
-```
-
-Invoke as `/vibemd:vibe`, `/vibemd:vibe-reconfigure`, or `/vibemd:vibe-provision-worker`.
 
 ## Star History
 
