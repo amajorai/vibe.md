@@ -44,8 +44,9 @@ apt-get update && apt-get install -y gh
 #
 # Where to get GH_TOKEN: on github.com go to Settings → Developer settings →
 # Personal access tokens → Tokens (classic) → Generate new token, and grant the
-# `repo` + `workflow` scopes. Copy the token (it is shown only once) and paste it
-# in place of the placeholder below — replace the whole <...> including brackets.
+# `repo` + `workflow` + `read:org` scopes. Copy the token (it is shown only once)
+# and paste it in place of the placeholder below — replace the whole <...>
+# including brackets.
 export GH_TOKEN=<your-personal-access-token>
 echo "$GH_TOKEN" | gh auth login --with-token
 gh auth status
@@ -155,6 +156,17 @@ You must **also** open these ports at the provider/cloud level, which a host
 firewall cannot do:
 
 - **Hetzner:** Cloud Console → Firewalls (or `hcloud firewall ...`), or none by default (all open).
+- **DigitalOcean:** Cloud Console → Networking → Firewalls → Create Firewall, or via CLI:
+  ```bash
+  doctl compute firewall create \
+    --name vibe-fw \
+    --inbound-rules "protocol:tcp,ports:22,address:0.0.0.0/0,address:::/0 protocol:tcp,ports:80,address:0.0.0.0/0,address:::/0 protocol:tcp,ports:443,address:0.0.0.0/0,address:::/0 protocol:tcp,ports:3000,address:0.0.0.0/0,address:::/0 protocol:tcp,ports:8000,address:0.0.0.0/0,address:::/0" \
+    --outbound-rules "protocol:tcp,ports:all,address:0.0.0.0/0,address:::/0 protocol:udp,ports:all,address:0.0.0.0/0,address:::/0"
+  # Apply it to the droplet:
+  DROPLET_ID=$(doctl compute droplet list --format ID,Name --no-header | grep vibe-server | awk '{print $1}')
+  FW_ID=$(doctl compute firewall list --format ID,Name --no-header | grep vibe-fw | awk '{print $1}')
+  doctl compute firewall add-droplets "$FW_ID" --droplet-ids "$DROPLET_ID"
+  ```
 - **AWS:** edit the instance's **Security Group** to allow inbound TCP 22, 80, 443, 3000, 8000.
 - **OVH:** Control Panel → network/firewall settings for the VPS.
 
@@ -191,6 +203,31 @@ headless server without a GUI. Use one of these instead:
   # scp -r ~/.config/.wrangler root@"$SERVER_IP":~/.config/.wrangler
   ```
 
-## Step 7: Cloud CLI for Orchestration (orchestrator role only)
+## Step 7: AI Coding CLIs (if chosen)
+
+*Skip this step if "None / Skip" was selected in Phase 2.*
+
+### Claude Code (if chosen)
+
+```bash
+bun add -g @anthropic-ai/claude-code
+claude --version
+# Headless auth — no browser needed. Get your key at console.anthropic.com → API Keys.
+echo 'export ANTHROPIC_API_KEY=<your-anthropic-api-key>' >> ~/.bashrc
+export ANTHROPIC_API_KEY=<your-anthropic-api-key>
+claude --version   # verify
+```
+
+### Codex CLI (if chosen)
+
+```bash
+bun add -g @openai/codex
+# Headless auth. Get your key at platform.openai.com → API Keys.
+echo 'export OPENAI_API_KEY=<your-openai-api-key>' >> ~/.bashrc
+export OPENAI_API_KEY=<your-openai-api-key>
+codex --version   # verify
+```
+
+## Step 8: Cloud CLI for Orchestration (orchestrator role only)
 
 See [references/orchestrator-setup.md](orchestrator-setup.md) for the full step-by-step.

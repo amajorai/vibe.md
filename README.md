@@ -18,11 +18,11 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 
 | Skill | What it does |
 |-------|------------------------------------------------------------------------------------------------------|
-| [`/vibe`](skills/vibe/SKILL.md) | Interview-driven full-stack setup. Detects local vs. server, provisions a VPS (Hetzner/OVH/AWS), installs Bun + GitHub CLI + Dokploy/Coolify, scaffolds a Better T Stack project, and wires up auto-deploy |
+| [`/vibe`](skills/vibe/SKILL.md) | Interview-driven full-stack setup. Detects local vs. server, provisions a VPS (Hetzner/DigitalOcean/OVH/AWS), installs Bun + GitHub CLI + Dokploy/Coolify, scaffolds a Better T Stack project, and wires up auto-deploy |
 
 ## Tech Stack
 
-- **Cloud provider**: Hetzner, OVH, or AWS (your choice, with CLI provisioned)
+- **Cloud provider**: Hetzner, DigitalOcean, OVH, or AWS (your choice, with CLI provisioned)
 - **Runtime**: Bun on the server
 - **Source control**: GitHub CLI authenticated
 - **Deployment platform**: Dokploy or Coolify (or both), with CLI authenticated and webhook configured
