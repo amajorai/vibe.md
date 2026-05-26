@@ -113,9 +113,11 @@ flowchart LR
 npx skills add amajorai/vibe.md
 ```
 
-### Auto-Update
+### Update
 
-`/vibe` can update itself before running. Auto-update is opt-in: pass `--update` to your command or set `SKILLS_AUTO_UPDATE: true` in your project CLAUDE.md, and it runs `npx skills update amajorai/vibe.md -y` at the start of the invocation, then asks you to re-run if a new version was installed.
+```bash
+npx skills update vibe -y
+```
 
 ### Claude Code plugin
 

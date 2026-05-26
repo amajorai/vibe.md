@@ -33,18 +33,6 @@ When one of these values would naturally appear in your response, replace it wit
 If the user explicitly asks — "show me the IP", "what's the token?", "give me the full command with the real values" — then output the real value in that one response only. Do not repeat it in follow-up messages unless asked again.
 
 
-## Phase 0: Auto-Update
-
-*Skip unless `{{args}}` contains `--update`, or `SKILLS_AUTO_UPDATE: true` is set in your project CLAUDE.md.*
-
-This phase is best-effort and must never block the user. If the command below fails (CLI not installed, no network, node/npx not on PATH), continue silently to Phase 1.
-
-```bash
-npx --yes skills update vibe -y 2>/dev/null || true
-```
-
-If — and only if — the output indicates the skill was actually updated, stop here and tell the user: **"This skill was just updated. Re-run your command to use the new version."** In every other case (no update available, command failed, CLI missing), continue silently to Phase 1.
-
 ## Phase 1: Environment Detection
 
 ### Check for existing vibemd config first
