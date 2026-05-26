@@ -49,7 +49,7 @@ npx skills add amajorai/vibe.md
 /plugin install vibemd@amajorai
 ```
 
-Invoke as `/vibe <project name>`.
+Invoke as `/vibemd:vibe`, `/vibemd:vibe-reconfigure`, or `/vibemd:vibe-provision-worker`.
 
 ## Star History
 
