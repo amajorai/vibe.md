@@ -121,8 +121,8 @@ go install github.com/coollabsio/coolify-cli/coolify@latest
 until curl -fsS --max-time 2 http://localhost:8000 >/dev/null 2>&1; do
   echo "Waiting for Coolify to start..."; sleep 5
 done
-coolify context set-token self-hosted <YOUR_COOLIFY_TOKEN> \
-  --url http://localhost:8000
+coolify context add localhost http://localhost:8000 <YOUR_COOLIFY_TOKEN>
+coolify context use localhost
 ```
 
 > **Running Both on one server:** Dokploy (port 3000) and Coolify (port 8000)

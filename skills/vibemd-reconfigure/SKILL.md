@@ -1,12 +1,12 @@
 ---
-name: vibemd-reconfigure
-description: "Reconfigure an existing vibemd server. Change server role (master ↔ orchestrator), swap or add a deployment platform (Dokploy/Coolify), or add/remove edge deployment (Wrangler). Safe to run on a live server — detects current state first and only applies the delta."
+name: vibe-reconfigure
+description: "Reconfigure an existing vibe server. Change server role (master ↔ orchestrator), swap or add a deployment platform (Dokploy/Coolify), or add/remove edge deployment (Wrangler). Safe to run on a live server — detects current state first and only applies the delta."
 argument-hint: [optional flags]
 ---
 
 # Reconfigure
 
-You are reconfiguring an already-provisioned vibemd server. Detect current state first, then ask what to change. Only apply the delta — do not reinstall things that are already correctly set up.
+You are reconfiguring an already-provisioned vibe server. Detect current state first, then ask what to change. Only apply the delta — do not reinstall things that are already correctly set up.
 
 **Args:** {{args}}
 
@@ -157,7 +157,14 @@ Only proceed after explicit confirmation.
 ```bash
 bun add -g wrangler
 wrangler --version
-wrangler login
+```
+
+`wrangler login` opens a browser OAuth flow and will not work on a headless server. Use the API token approach instead (create a token at Cloudflare dashboard → My Profile → API Tokens, with Workers/Pages/DNS permissions):
+
+```bash
+export CLOUDFLARE_API_TOKEN=<your-cloudflare-api-token>
+echo 'export CLOUDFLARE_API_TOKEN=<your-cloudflare-api-token>' >> ~/.bashrc
+wrangler whoami   # verify auth
 ```
 
 ### Edge: Remove Wrangler

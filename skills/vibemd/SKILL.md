@@ -1,5 +1,5 @@
 ---
-name: vibemd
+name: vibe
 description: "Server setup skill. Detects local vs. remote environment. If local, provisions a VPS on the chosen cloud provider. If already on a server, asks whether this is an orchestrator (manages more servers) or a standalone master (everything on one machine, like Coolify). Installs Bun, GitHub CLI, Dokploy/Coolify, and optional Wrangler, then opens the firewall for the platform UIs. Ends by offering to install the ship and hardening skills."
 argument-hint: [optional flags]
 ---
@@ -67,8 +67,8 @@ cat /etc/vibemd/server.json 2>/dev/null || echo "NO_CONFIG"
 > - Set up: `[provisioned_at]`
 >
 > **What would you like to do?**
-> - **Add worker servers** → run `/vibemd-provision-worker` *(orchestrator role only)*
-> - **Change role, platform, or installed tools** → run `/vibemd-reconfigure`
+> - **Add worker servers** → run `/vibe-provision-worker` *(orchestrator role only)*
+> - **Change role, platform, or installed tools** → run `/vibe-reconfigure`
 > - **Harden this server** (SSH, fail2ban, UFW) → run `/hardening`
 > - **Start fresh** — re-run full setup on this machine (destructive — will overwrite config)
 
@@ -118,7 +118,7 @@ AskUserQuestion(
 
 ```
 AskUserQuestion(
-  question: "What role should the new server play? (Not sure? Start with Master. This can be changed at any time by running /vibemd-reconfigure on your server.)",
+  question: "What role should the new server play? (Not sure? Start with Master. This can be changed at any time by running /vibe-reconfigure on your server.)",
   options: [
     "Master/standalone — everything runs on this one machine (like a single-machine Coolify setup). No need to manage other servers.",
     "Orchestrator — this is the control plane. It manages deployments AND can provision and connect more worker servers as needed (installs the cloud CLI on the server in Step 7)."
@@ -188,7 +188,7 @@ Ask these questions in order:
 
 ```
 AskUserQuestion(
-  question: "You're already on a server. What role does it play? (Not sure? Start with Master. This can be changed at any time by running /vibemd-reconfigure on your server.)",
+  question: "You're already on a server. What role does it play? (Not sure? Start with Master. This can be changed at any time by running /vibe-reconfigure on your server.)",
   options: [
     "Master/standalone — everything runs here. One machine to rule them all (like a single-machine Coolify setup). No need to manage other servers.",
     "Orchestrator — this is the control plane. It manages deployments AND can provision and connect more worker servers as needed."

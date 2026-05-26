@@ -1,5 +1,5 @@
 ---
-name: vibemd-provision-worker
+name: vibe-provision-worker
 description: "Provision a new worker server from an orchestrator. Reads /etc/vibemd/server.json for provider, platform, and AI CLI preferences, spins up a new VPS, registers it with Dokploy or Coolify, optionally installs AI coding CLIs, and records the worker in server.json."
 argument-hint: [optional flags]
 ---
@@ -31,8 +31,8 @@ cat /etc/vibemd/server.json 2>/dev/null || echo "NO_CONFIG"
 If `NO_CONFIG` — stop and tell the user:
 
 > **No server config found at `/etc/vibemd/server.json`.**
-> This skill must run on a server that was set up with `/vibemd`. Either:
-> - Run `/vibemd` on this machine first, or
+> This skill must run on a server that was set up with `/vibe`. Either:
+> - Run `/vibe` on this machine first, or
 > - Manually provide: provider (hetzner/digitalocean/ovh/aws), platform (dokploy/coolify), and whether to install AI coding CLIs on workers.
 
 If config exists, parse and display it:

@@ -1,4 +1,4 @@
-# Cloud CLI for Orchestration (Step 7 — orchestrator role only)
+# Cloud CLI for Orchestration (Step 8 — orchestrator role only)
 
 **Only run this step if the user chose the orchestrator role** (the server should provision and manage other worker nodes). Skip it for a master/standalone server. The server itself runs headless Linux, so the Linux x86_64 binaries below are correct here (unlike Phase 3A, which runs on the local machine and may need a different OS/arch).
 

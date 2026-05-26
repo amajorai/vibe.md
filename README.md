@@ -18,9 +18,9 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 
 | Skill | What it does |
 |-------|--------------|
-| [`/vibemd`](skills/vibemd/SKILL.md) | Full setup skill. Detects local vs. server, provisions a VPS (Hetzner/DigitalOcean/OVH/AWS) with region and size chosen from live CLI queries, installs Bun + GitHub CLI + Dokploy/Coolify + optional Wrangler + optional AI coding CLIs (Claude Code, Codex), and writes `/etc/vibemd/server.json`. Re-running on an already-configured server shows current state and offers next steps instead of re-running setup. |
-| [`/vibemd-provision-worker`](skills/vibemd-provision-worker/SKILL.md) | Add a worker server to an existing orchestrator. Reads `/etc/vibemd/server.json` for provider, platform, and AI CLI preferences, spins up a new VPS, registers it with Dokploy or Coolify, optionally installs AI coding CLIs, and records the worker in the config. |
-| [`/vibemd-reconfigure`](skills/vibemd-reconfigure/SKILL.md) | Change role, platform, or installed tools on an existing server. Detects current state from `/etc/vibemd/server.json` first and only applies the delta — switch master ↔ orchestrator, swap or add Dokploy/Coolify, install or remove Wrangler, and add or remove AI coding CLIs. Safe to run on a live server. |
+| [`/vibe`](skills/vibemd/SKILL.md) | Full setup skill. Detects local vs. server, provisions a VPS (Hetzner/DigitalOcean/OVH/AWS) with region and size chosen from live CLI queries, installs Bun + GitHub CLI + Dokploy/Coolify + optional Wrangler + optional AI coding CLIs (Claude Code, Codex), and writes `/etc/vibemd/server.json`. Re-running on an already-configured server shows current state and offers next steps instead of re-running setup. |
+| [`/vibe-provision-worker`](skills/vibemd-provision-worker/SKILL.md) | Add a worker server to an existing orchestrator. Reads `/etc/vibemd/server.json` for provider, platform, and AI CLI preferences, spins up a new VPS, registers it with Dokploy or Coolify, optionally installs AI coding CLIs, and records the worker in the config. |
+| [`/vibe-reconfigure`](skills/vibemd-reconfigure/SKILL.md) | Change role, platform, or installed tools on an existing server. Detects current state from `/etc/vibemd/server.json` first and only applies the delta — switch master ↔ orchestrator, swap or add Dokploy/Coolify, install or remove Wrangler, and add or remove AI coding CLIs. Safe to run on a live server. |
 
 ## Tech Stack
 
@@ -40,7 +40,7 @@ npx skills add amajorai/vibe.md
 
 ### Auto-Update
 
-`/vibemd` can update itself before running. Auto-update is opt-in: pass `--update` to your command or set `SKILLS_AUTO_UPDATE: true` in your project CLAUDE.md, and it runs `npx skills update vibe -y` at the start of the invocation, then asks you to re-run if a new version was installed.
+`/vibe` can update itself before running. Auto-update is opt-in: pass `--update` to your command or set `SKILLS_AUTO_UPDATE: true` in your project CLAUDE.md, and it runs `npx skills update amajorai/vibe.md -y` at the start of the invocation, then asks you to re-run if a new version was installed.
 
 ### Claude Code plugin
 
@@ -49,7 +49,7 @@ npx skills add amajorai/vibe.md
 /plugin install vibemd@amajorai
 ```
 
-Invoke as `/vibemd <project name>`.
+Invoke as `/vibe <project name>`.
 
 ## Star History
 
