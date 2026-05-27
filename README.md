@@ -34,6 +34,7 @@ Invoke as `/vibemd:vibe`, `/vibemd:vibe-reconfigure`, or `/vibemd:vibe-provision
 
 ## Works great with
 
+- 👻 **[spec.md](https://github.com/amajorai/spec.md)** to spec out everything before building — break any project into atomic GitHub issues so your team always knows what to ship next.
 - 📦 **[ship.md](https://github.com/amajorai/ship.md)** to build features with a quality-gated pipeline once your environment is running: explore → plan → implement → verify.
 - 🔎 **[fix.md](https://github.com/amajorai/fix.md)** to debug production issues — instruments code with targeted logs, reads them to confirm root cause, and makes a surgical fix.
 - 🎉 **[party.md](https://github.com/amajorai/party.md)** to keep building autonomously 24/7. GitHub Projects as your interface; drop in issues and the agent ships them while you sleep.
