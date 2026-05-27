@@ -395,7 +395,7 @@ npx --yes skills list 2>/dev/null | grep -qE '^ship$' && echo "ALREADY_INSTALLED
 
 If not installed, ask: **"Would you like me to install the `ship` skill? It enables `/ship <feature>` for full-cycle development."**
 
-If yes: `npx --yes skills add amajorai/ship.md -a claude-code -y`
+If yes: `npx --yes skills add -g amajorai/ship.md -a claude-code -y`
 
 - **Codex mode:** invoke `/ship` immediately.
 - **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session, then run `/ship`."** Do not invoke it yourself.
@@ -410,7 +410,7 @@ npx --yes skills list 2>/dev/null | grep -qE '^hardening$' && echo "ALREADY_INST
 
 Ask: **"Would you like me to install and run the `hardening` skill to lock down this server?"**
 
-If yes: `npx --yes skills add amajorai/skills/skills/hardening -a claude-code -y`
+If yes: `npx --yes skills add -g amajorai/skills/skills/hardening -a claude-code -y`
 
 - **Codex mode:** invoke `/hardening` immediately. Once it completes (or if the user declined), continue to offer #3.
 - **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session, then run `/hardening`."** Do not invoke it yourself. Then immediately continue to offer #3.
@@ -425,7 +425,7 @@ npx --yes skills list 2>/dev/null | grep -qE '^party$' && echo "ALREADY_INSTALLE
 
 Ask: **"Would you like me to install the `party` skill? It turns your GitHub Issues into a self-driving kanban board — run `/party` to start."**
 
-If yes: `npx --yes skills add amajorai/party.md -a claude-code -y`
+If yes: `npx --yes skills add -g amajorai/party.md -a claude-code -y`
 
 - **Codex mode:** invoke `/party --setup` immediately.
 - **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session, then run `/party --setup`."** Do not invoke it yourself.
@@ -440,7 +440,7 @@ npx --yes skills list 2>/dev/null | grep -qE '^hunt$' && echo "ALREADY_INSTALLED
 
 Ask: **"Would you like me to install the `hunt` skill? It enables `/hunt <bug description>` for systematic debugging."**
 
-If yes: `npx --yes skills add amajorai/fix.md -a claude-code -y`
+If yes: `npx --yes skills add -g amajorai/fix.md -a claude-code -y`
 
 - **Codex mode:** tell the user hunt is ready — invoke when needed.
 - **Claude Code mode:** tell the user: **"Run `/reload-plugins` in this session so `/fix` becomes available."** Do not invoke it yourself.

@@ -14,13 +14,7 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 ## Quickstart
 
 ```bash
-npx skills add amajorai/vibe.md
-```
-
-### Update
-
-```bash
-npx skills update vibe -y
+npx skills add -g amajorai/vibe.md
 ```
 
 ### Claude Code plugin
