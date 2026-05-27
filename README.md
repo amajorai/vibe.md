@@ -17,6 +17,26 @@ The end-to-end skill for spinning up a 24/7 production-ready full-stack dev and 
 npx skills add -g amajorai/vibe.md
 ```
 
+### Update
+
+```bash
+# Update this skill
+npx skills update vibe
+
+# Update multiple vibe skills
+npx skills update vibe vibe-reconfigure vibe-provision-worker
+
+# Update all installed skills (interactive scope prompt)
+npx skills update
+
+# Update only global or project skills
+npx skills update -g
+npx skills update -p
+
+# Non-interactive (auto-detects scope)
+npx skills update -y
+```
+
 ### Claude Code plugin
 
 ```
