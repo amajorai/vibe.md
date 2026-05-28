@@ -54,6 +54,8 @@ Invoke as `/vibemd:vibe`, `/vibemd:vibe-reconfigure`, or `/vibemd:vibe-provision
 - 🎉 **[party.md](https://github.com/amajorai/party.md)** to keep building autonomously 24/7. GitHub Projects as your interface; drop in issues and the agent ships them while you sleep.
 - 🎬 **[replay.md](https://github.com/amajorai/replay.md)** to record and share live video of your deployed app — auto-detects your vibe server for zero-setup cloud recording.
 - ⚡ **[amajorai/skills](https://github.com/amajorai/skills)** for edge cases, E2E, payments, auth, SEO, icons, CI, observability, and 20+ more.
+- 🧪 **[sandbox.md](https://github.com/amajorai/sandbox.md)** to layer self-hosted sandboxes on top of your vibe server — spawn isolated exec environments or dev workspaces without leaving the ecosystem.
+- 📋 **[ctx.md](https://github.com/amajorai/ctx.md)** to capture what was configured after vibe sets up your server — future agents know the stack without re-exploring from scratch.
 
 ## Skills
 
