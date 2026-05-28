@@ -11,6 +11,20 @@ You are setting up a production server environment. Interview first, execute in 
 **Args:** {{args}}
 
 
+## Advisor - Getting Help When Stuck
+
+When uncertain about your approach, stuck after 2 or more failed attempts, or about to commit to a significant decision, seek a second opinion before proceeding.
+
+**Claude Code** - call `advisor()` with no arguments. Your full conversation history is forwarded to a stronger model automatically. Use it:
+- Before committing to an approach you are not sure about
+- After 2 or more failed attempts at the same problem
+- Before declaring a complex task complete
+
+To use a stronger advisor model, edit `~/.claude/settings.json` and set `"advisorModel"` to `"opus"`. Changes take effect after restarting the session.
+
+**Codex CLI** (`CODEX=true` or `CODEX_SANDBOX` is set) - the `advisor()` tool is unavailable. When stuck, surface the uncertainty to the user explicitly and ask for direction rather than guessing. Alternatively, switch to a stronger model in your Codex configuration before continuing.
+
+
 ## Privacy Rule — Redact Sensitive Values by Default
 
 Never print the following in chat, even if you just ran a command that returned them:
