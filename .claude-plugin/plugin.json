@@ -1,0 +1,11 @@
+{
+  "name": "vibemd",
+  "description": "Server setup and management from chat. Provision a VPS, install the full stack (Bun, GitHub CLI, Dokploy/Coolify), add worker nodes, and reconfigure existing servers.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jia Wei Ng"
+  },
+  "repository": "https://github.com/amajorai/vibe.md",
+  "license": "MIT",
+  "keywords": ["vibe", "server", "vps", "deploy", "dokploy", "coolify", "provisioning"]
+}

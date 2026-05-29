@@ -1,0 +1,13 @@
+{
+  "name": "vibemd",
+  "owner": {
+    "name": "Jia Wei Ng"
+  },
+  "plugins": [
+    {
+      "name": "vibemd",
+      "description": "Server setup and management from chat. Provision a VPS, install the full stack (Bun, GitHub CLI, Dokploy/Coolify), add worker nodes, and reconfigure existing servers.",
+      "source": "."
+    }
+  ]
+}

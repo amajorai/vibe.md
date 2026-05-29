@@ -61,9 +61,9 @@ Invoke as `/vibemd:vibe`, `/vibemd:vibe-reconfigure`, or `/vibemd:vibe-provision
 
 | Skill | When to use |
 |-------|-------------|
-| [`/vibe`](skills/vibemd/SKILL.md) | **First-time setup.** Run once per machine — from local or directly on a server. Provisions a VPS (if local), installs the full stack, and writes `/etc/vibemd/server.json`. Re-running on an already-configured server shows current state and offers next steps. |
-| [`/vibe-provision-worker`](skills/vibemd-provision-worker/SKILL.md) | **Add a worker to an existing orchestrator.** Run on an orchestrator after `/vibe` is done. Spins up a new VPS, registers it with Dokploy or Coolify, and records it in server config. |
-| [`/vibe-reconfigure`](skills/vibemd-reconfigure/SKILL.md) | **Change an existing server.** Run anytime after `/vibe` to switch role (master ↔ orchestrator), swap deployment platforms, or add/remove Wrangler and AI coding CLIs. Only applies the delta. |
+| [`/vibe`](skills/vibe/SKILL.md) | **First-time setup.** Run once per machine — from local or directly on a server. Provisions a VPS (if local), installs the full stack, and writes `/etc/vibemd/server.json`. Re-running on an already-configured server shows current state and offers next steps. |
+| [`/vibe-provision-worker`](skills/vibe-provision-worker/SKILL.md) | **Add a worker to an existing orchestrator.** Run on an orchestrator after `/vibe` is done. Spins up a new VPS, registers it with Dokploy or Coolify, and records it in server config. |
+| [`/vibe-reconfigure`](skills/vibe-reconfigure/SKILL.md) | **Change an existing server.** Run anytime after `/vibe` to switch role (master ↔ orchestrator), swap deployment platforms, or add/remove Wrangler and AI coding CLIs. Only applies the delta. |
 
 ## How to use which skill
 
