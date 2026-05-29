@@ -13,6 +13,8 @@ You are running on an **orchestrator server** and provisioning a new worker node
 
 ## Phase 1: Read Server Config
 
+> **Note:** All command blocks in this skill assume a bash environment. On a Windows host, run them via the Bash tool / Git Bash.
+
 ```bash
 cat /etc/vibemd/server.json 2>/dev/null || echo "NO_CONFIG"
 ```
