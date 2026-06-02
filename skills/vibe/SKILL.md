@@ -79,6 +79,8 @@ If the user chooses "Start fresh", continue to the environment detection below. 
 ### Detect environment (new setup only)
 
 ```bash
+uname -s   # OS: Linux / Darwin (macOS) / MINGW*|MSYS*|CYGWIN* (Windows)
+uname -m   # arch: x86_64 / arm64 / aarch64
 uname -a && cat /etc/os-release 2>/dev/null || sw_vers 2>/dev/null
 curl -s --max-time 2 http://169.254.169.254/latest/meta-data/instance-id 2>/dev/null && echo "IS_AWS" || true
 curl -s --max-time 2 http://169.254.0.1/metadata 2>/dev/null | grep -qi hetzner && echo "IS_HETZNER" || true
@@ -86,11 +88,43 @@ curl -s --max-time 2 http://169.254.169.254/metadata/v1/id 2>/dev/null && echo "
 echo "USER=$USER HOME=$HOME"
 ```
 
+> On Windows, `uname` exists under Git Bash / WSL. If running native PowerShell, use `$env:OS` / `$PROCESSOR_ARCHITECTURE` instead — but the rest of this skill assumes a bash environment (Git Bash or WSL).
+
+**Record OS and arch** — they decide which steps apply (see the guard matrix below).
+
 Determine:
-- **Local dev machine** (macOS, Windows, desktop Linux with GUI): need to provision a VPS first
+- **Local dev machine** (macOS, Windows, desktop Linux with GUI): either provision a VPS, **or** set up *this machine* as the server (see next question)
 - **Already on a VPS / headless server**: skip straight to server setup
 
-Tell the user: "I see you're on [local machine / a server]. Is that right?"
+Tell the user: "I see you're on [local machine / a server] running [OS/arch]. Is that right?"
+
+### If local: provision remote, or use this machine as the server?
+
+When a **local machine** is detected, ask with AskUserQuestion:
+
+```
+AskUserQuestion(
+  question: "You're on a local machine. Do you want me to provision a remote cloud server, or set up THIS machine as the server (e.g. a Mac mini, Raspberry Pi, home Linux box, or Windows PC)?",
+  options: [
+    "Provision a remote VPS — pick a cloud provider, I'll spin one up (Phase 3A). Best for always-on public hosting.",
+    "Use this machine as the server — install the stack here. Good for a home server / Mac mini / Raspberry Pi."
+  ]
+)
+```
+
+- **Remote VPS** → continue with the local-machine interview (Q1 cloud provider, etc.) and Phase 3A.
+- **This machine as the server** → skip provisioning (Phase 3A/3C). Apply Phase 3B **subject to the OS/arch guard matrix below**, then write the config. Treat the machine like the "already on a server" path.
+
+### OS / arch guard matrix (only when setting up THIS machine as the server)
+
+| Host | Bun | Deployment platform (Dokploy/Coolify) | Hardening | Notes |
+|------|-----|----------------------------------------|-----------|-------|
+| **Linux x86_64** | ✅ curl install | ✅ full | ✅ Linux-only steps apply | Standard path. |
+| **Linux ARM (Raspberry Pi, ARM VPS)** | ✅ | ✅ (Docker supports ARM) | ✅ | **Fully supported** — just pick **arm64** binaries for any cloud CLI (see orchestrator-setup.md). |
+| **macOS (Mac mini, Apple Silicon)** | ✅ curl install; `gh` via `brew` | ⚠️ Dokploy/Coolify target **Linux + Docker** — not natively supported on macOS. Warn the user; suggest a Linux box/VM or run only the non-platform pieces. | ❌ **Skip** — UFW/fail2ban/AppArmor/sysctl are Linux-only. Say so explicitly. | Don't run `apt-get`. |
+| **Windows** | ✅ (Windows build) | ❌ Dokploy/Coolify are **Linux-only** → direct the user to **WSL2** or a Linux server instead of attempting `apt-get`. | ❌ Linux-only — does not apply. | Detect and stop before Linux commands. |
+
+When a step doesn't apply to the host, **skip it and tell the user why** ("Dokploy needs Linux + Docker; on macOS I'll set up Bun and the GitHub CLI but recommend a Linux host for the deployment platform") rather than running a command that will fail.
 
 
 ## Phase 2: Interview
@@ -160,8 +194,8 @@ AskUserQuestion(
   question: "Which AI coding CLI(s) should be installed?",
   options: [
     "None / Skip",
-    "Claude Code (@anthropic-ai/claude-code) — needs ANTHROPIC_API_KEY",
-    "Codex CLI (@openai/codex) — needs OPENAI_API_KEY",
+    "Claude Code (@anthropic-ai/claude-code) — sign in with your Claude subscription (Pro/Max) or an API key",
+    "Codex CLI (@openai/codex) — sign in with your ChatGPT subscription or an API key",
     "Both"
   ]
 )
@@ -230,8 +264,8 @@ AskUserQuestion(
   question: "Which AI coding CLI(s) should be installed?",
   options: [
     "None / Skip",
-    "Claude Code (@anthropic-ai/claude-code) — needs ANTHROPIC_API_KEY",
-    "Codex CLI (@openai/codex) — needs OPENAI_API_KEY",
+    "Claude Code (@anthropic-ai/claude-code) — sign in with your Claude subscription (Pro/Max) or an API key",
+    "Codex CLI (@openai/codex) — sign in with your ChatGPT subscription or an API key",
     "Both"
   ]
 )
@@ -348,7 +382,7 @@ Run both blocks above in order. You'll have `dokploy` pointing at port 3000 and 
 - [ ] Deployment platform installed on server (Dokploy / Coolify / both) + server-side CLI authenticated
 - [ ] Firewall opened for the platform UI ports (host UFW + provider/security group)
 - [ ] Wrangler installed and authenticated via API token (if edge)
-- [ ] AI coding CLIs installed and API keys set (Claude Code / Codex — if chosen)
+- [ ] AI coding CLIs installed and authenticated — subscription login or API key (Claude Code / Codex — if chosen)
 - [ ] AI coding CLIs installed on workers (if orchestrator + workers chosen)
 - [ ] Cloud CLI on server for orchestration (only if orchestrator role)
 - [ ] Platform CLI installed locally and authenticated against the server (Dokploy / Coolify / both)
@@ -417,6 +451,8 @@ If yes: `npx --yes skills add -g amajorai/ship.md -a claude-code -y`
 ### 2. Install and run the `hardening` skill?
 
 Secures the server: SSH hardening, fail2ban, UFW, unattended upgrades, AppArmor, and more.
+
+> **Linux only.** These measures (UFW, fail2ban, AppArmor, sysctl, SSH socket/port changes) are Linux-specific. If the host detected in Phase 1 is **macOS or Windows**, **skip this offer** and tell the user: *"The hardening skill is Linux-only, so I'm skipping it on [macOS/Windows]. Secure this host with its native tools (e.g. the macOS firewall, or Windows Defender Firewall + a non-admin account) instead."* Only run the steps below on a Linux host.
 
 ```bash
 npx --yes skills list 2>/dev/null | grep -qE '^hardening$' && echo "ALREADY_INSTALLED" || echo "NOT_INSTALLED"

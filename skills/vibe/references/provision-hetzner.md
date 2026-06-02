@@ -64,7 +64,7 @@ hcloud server create \
   --ssh-key vibe-key
 
 SERVER_IP=$(hcloud server ip vibe-server)
-echo "Server ready at $SERVER_IP"
+# IP captured in $SERVER_IP — used by the ssh command below, not echoed in chat.
 
 # Hetzner Ubuntu images log in as root:
 ssh root@"$SERVER_IP"

@@ -98,7 +98,7 @@ SERVER_IP=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=vibe-server" "Name=instance-state-name,Values=running,pending" \
   --query 'Reservations[0].Instances[0].PublicIpAddress' \
   --output text)
-echo "Server ready at $SERVER_IP"
+# IP captured in $SERVER_IP — used by the ssh command below, not echoed in chat.
 
 # AWS Ubuntu AMIs log in as the 'ubuntu' user (Amazon Linux uses 'ec2-user'):
 ssh -i ~/.ssh/vibe-key.pem ubuntu@"$SERVER_IP"

@@ -11,6 +11,11 @@ You are reconfiguring an already-provisioned vibe server. Detect current state f
 **Args:** {{args}}
 
 
+## Privacy Rule — Redact Sensitive Values by Default
+
+Do not print these in chat, even when a command you just ran returned them: server IP addresses, API keys / tokens, SSH private keys or fingerprints, passwords, or cloud credentials. Keep such values in shell variables and reference the variable rather than echoing the raw value; redact by omission when reporting progress (e.g. *"Reconfigured — the IP/token is not shown in chat, ask if you need it."*). SSH **public** keys may be shown. If the user explicitly asks for a value, give it in that one response only.
+
+
 ## Phase 1: Detect Current State
 
 Check the server config first — it's the fastest and most reliable source of truth:

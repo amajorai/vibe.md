@@ -64,6 +64,9 @@ Install based on the user's Phase 2 answer:
 
 ```bash
 curl -sSL https://dokploy.com/install.sh | sh
+# This prints the server's own public IP as the UI URL — the user needs it to
+# open the dashboard in their browser, so showing it once here is allowed. Do
+# not repeat the IP in later messages (see the Privacy Rule in vibe SKILL.md).
 echo "Dokploy UI → http://$(curl -s ifconfig.me):3000"
 
 bun add -g @dokploy/cli
@@ -90,6 +93,8 @@ dokploy auth -u http://localhost:3000 -t <YOUR_DOKPLOY_API_KEY>
 
 ```bash
 curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash
+# Prints the server's own public IP as the UI URL (needed to open the dashboard);
+# allowed once here, do not repeat the IP afterward (see the Privacy Rule).
 echo "Coolify UI → http://$(curl -s ifconfig.me):8000"
 
 # The Coolify CLI is a Go program installed via `go install`, so Go must be
@@ -207,26 +212,75 @@ headless server without a GUI. Use one of these instead:
 
 *Skip this step if "None / Skip" was selected in Phase 2.*
 
+Each CLI supports **two equal sign-in paths** — pick whichever fits the user:
+
+- **Subscription login** — use an existing Claude (Pro/Max) or ChatGPT plan. No per-token API billing.
+- **API key** — use a pay-as-you-go API key.
+
+> **Headless caveat:** the subscription flows are browser/OAuth-based. On a GUI-less
+> server you complete them with a portable token, a copied credential file, a device
+> code, or SSH port-forwarding — each documented below. Keep all tokens/keys out of
+> chat (see the Privacy Rule).
+
 ### Claude Code (if chosen)
 
 ```bash
 bun add -g @anthropic-ai/claude-code
 claude --version
-# Headless auth — no browser needed. Get your key at console.anthropic.com → API Keys.
+```
+
+**Path A — Claude subscription (Pro/Max).** On a machine that *has* a browser, run
+`claude setup-token` — it walks through OAuth and prints a long-lived token. Put that
+token on the server (no browser needed there):
+
+```bash
+# In ~/.bashrc on the server (token generated via `claude setup-token` elsewhere):
+echo 'export CLAUDE_CODE_OAUTH_TOKEN=<your-claude-oauth-token>' >> ~/.bashrc
+export CLAUDE_CODE_OAUTH_TOKEN=<your-claude-oauth-token>
+claude --version   # verify it authenticates
+```
+
+**Path B — API key.** Get a key at console.anthropic.com → API Keys:
+
+```bash
 echo 'export ANTHROPIC_API_KEY=<your-anthropic-api-key>' >> ~/.bashrc
 export ANTHROPIC_API_KEY=<your-anthropic-api-key>
 claude --version   # verify
 ```
 
+See the [Claude Code authentication docs](https://code.claude.com/docs/en/authentication) for details on `setup-token` and `CLAUDE_CODE_OAUTH_TOKEN`.
+
 ### Codex CLI (if chosen)
 
 ```bash
 bun add -g @openai/codex
-# Headless auth. Get your key at platform.openai.com → API Keys.
+codex --version
+```
+
+**Path A — ChatGPT subscription.** Use any one of these headless-friendly methods:
+
+```bash
+# 1. Device-code flow — prints a URL + code; open them in any browser to approve:
+codex login --device-auth
+
+# 2. Or copy credentials from a machine where you ran `codex login` interactively:
+#    (auth.json is not host-bound and refreshes automatically)
+#    scp ~/.codex/auth.json  <server>:~/.codex/auth.json
+
+# 3. Or SSH port-forward the login helper, then run `codex login` and open the
+#    printed URL in your LOCAL browser:
+#    ssh -L 1455:localhost:1455 <server>   # then, on the server: codex login
+```
+
+**Path B — API key.** Get a key at platform.openai.com → API Keys:
+
+```bash
 echo 'export OPENAI_API_KEY=<your-openai-api-key>' >> ~/.bashrc
 export OPENAI_API_KEY=<your-openai-api-key>
 codex --version   # verify
 ```
+
+See the [Codex authentication docs](https://developers.openai.com/codex/auth) for details on `--device-auth` and `~/.codex/auth.json`.
 
 ## Step 8: Cloud CLI for Orchestration (orchestrator role only)
 

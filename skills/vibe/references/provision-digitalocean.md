@@ -76,7 +76,7 @@ doctl compute droplet create vibe-server \
   --wait
 
 SERVER_IP=$(doctl compute droplet get vibe-server --format PublicIPv4 --no-header)
-echo "Droplet ready at $SERVER_IP"
+# IP captured in $SERVER_IP — used by the ssh command below, not echoed in chat.
 
 # DigitalOcean Ubuntu images log in as root:
 ssh root@"$SERVER_IP"

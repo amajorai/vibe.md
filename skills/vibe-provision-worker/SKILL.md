@@ -11,6 +11,15 @@ You are running on an **orchestrator server** and provisioning a new worker node
 **Args:** {{args}}
 
 
+## Privacy Rule — Redact Sensitive Values by Default
+
+Do not print these in chat, even when a command you just ran returned them: worker/server IP addresses, API keys / tokens, SSH private keys or fingerprints, passwords, or cloud credentials. Keep IPs in shell variables (e.g. `$WORKER_IP`) and reference the variable in later commands instead of echoing the raw value. When reporting progress, redact by omission:
+
+> Worker provisioned and SSH is up. *(The IP is not shown in chat — ask if you need it.)*
+
+**Exceptions you may show:** an SSH **public** key (public by design), and the worker IP **at the registration step** where the user must paste it into the Dokploy/Coolify UI — show it once there, flagged as needed for that manual step. If the user explicitly asks for the IP/token, give it in that one response only.
+
+
 ## Phase 1: Read Server Config
 
 > **Note:** All command blocks in this skill assume a bash environment. On a Windows host, run them via the Bash tool / Git Bash.
@@ -100,7 +109,7 @@ hcloud server create \
   --ssh-key orchestrator-key
 
 WORKER_IP=$(hcloud server describe <WORKER_LABEL> -o format='{{.PublicNet.IPv4.IP}}')
-echo "Worker IP: $WORKER_IP"
+# IP captured in $WORKER_IP for later steps — not echoed (see Privacy Rule).
 ```
 
 **DigitalOcean:**
@@ -118,7 +127,7 @@ doctl compute droplet create <WORKER_LABEL> \
   --wait
 
 WORKER_IP=$(doctl compute droplet list --format Name,PublicIPv4 --no-header | grep <WORKER_LABEL> | awk '{print $2}')
-echo "Worker IP: $WORKER_IP"
+# IP captured in $WORKER_IP for later steps — not echoed (see Privacy Rule).
 ```
 
 **AWS:**
@@ -140,13 +149,13 @@ aws ec2 wait instance-running --instance-ids "$INSTANCE_ID"
 WORKER_IP=$(aws ec2 describe-instances \
   --instance-ids "$INSTANCE_ID" \
   --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
-echo "Worker IP: $WORKER_IP"
+# IP captured in $WORKER_IP for later steps — not echoed (see Privacy Rule).
 ```
 
 ### Wait for SSH to be ready
 
 ```bash
-echo "Waiting for SSH on $WORKER_IP..."
+echo "Waiting for SSH on the new worker..."   # IP kept in $WORKER_IP, not printed
 until ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@"$WORKER_IP" echo "ready" 2>/dev/null; do
   sleep 5
 done
@@ -167,41 +176,46 @@ BOOTSTRAP
 
 ### Register with the deployment platform
 
+This is the one step where the user must paste the worker IP into the platform UI, so showing it **once here** is allowed (see the Privacy Rule). The SSH public key is public and also needed for registration.
+
 ```bash
 # Dokploy (if platform is dokploy or both):
 # UI → Settings → Servers → Add Server → paste IP and your SSH public key
-echo "Dokploy: open http://$(curl -s ifconfig.me):3000 → Settings → Servers → Add Server"
-echo "  IP: $WORKER_IP"
-echo "  SSH key: $(cat ~/.ssh/id_ed25519.pub)"
+echo "Dokploy: open the Dokploy UI on port 3000 → Settings → Servers → Add Server"
+echo "  Worker IP (needed for this manual step): $WORKER_IP"
+echo "  SSH public key (paste into the UI): $(cat ~/.ssh/id_ed25519.pub)"
 
 # Coolify (if platform is coolify or both):
 # UI → Servers → Add → New Server → paste IP
-echo "Coolify: open http://$(curl -s ifconfig.me):8000 → Servers → Add → New Server"
-echo "  IP: $WORKER_IP"
+echo "Coolify: open the Coolify UI on port 8000 → Servers → Add → New Server"
+echo "  Worker IP (needed for this manual step): $WORKER_IP"
 ```
 
-Pause and ask the user to complete the UI registration step before continuing.
+Pause and ask the user to complete the UI registration step before continuing. After they confirm, do not repeat the IP in later messages.
 
 ### Install AI coding CLIs on worker (if chosen)
 
 *Skip if the user chose "Skip for this worker" in Phase 2.*
 
+Install the binaries on the worker (auth is configured separately, below):
+
 ```bash
 # Read which CLIs to install from config / user choice
 ssh root@"$WORKER_IP" bash -s << 'AICLI'
 source ~/.bashrc 2>/dev/null || true
-
 # Claude Code (if in ai_clis)
 bun add -g @anthropic-ai/claude-code
-echo 'export ANTHROPIC_API_KEY=<your-anthropic-api-key>' >> ~/.bashrc
-
 # Codex CLI (if in ai_clis)
 bun add -g @openai/codex
-echo 'export OPENAI_API_KEY=<your-openai-api-key>' >> ~/.bashrc
 AICLI
 ```
 
-Remind the user: **"API keys were added as placeholders in `~/.bashrc` on the worker. SSH in and replace `<your-*-api-key>` with real values."**
+**Authentication — each CLI offers two equal paths** (full commands in [../vibe/references/server-setup.md](../vibe/references/server-setup.md) Step 7):
+
+- **Subscription login:** Claude → put a `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`, run where a browser exists) in the worker's `~/.bashrc`. Codex → `codex login --device-auth` on the worker, or copy `~/.codex/auth.json` from a machine where you ran `codex login`.
+- **API key:** add `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` to the worker's `~/.bashrc`.
+
+Tokens and keys are secrets — set them on the worker (SSH in or via your secrets manager); do not print them in chat.
 
 
 ## Phase 4: Update Server Config

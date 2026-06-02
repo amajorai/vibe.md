@@ -1,6 +1,22 @@
 # Cloud CLI for Orchestration (Step 8 — orchestrator role only)
 
-**Only run this step if the user chose the orchestrator role** (the server should provision and manage other worker nodes). Skip it for a master/standalone server. The server itself runs headless Linux, so the Linux x86_64 binaries below are correct here (unlike Phase 3A, which runs on the local machine and may need a different OS/arch).
+**Only run this step if the user chose the orchestrator role** (the server should provision and manage other worker nodes). Skip it for a master/standalone server.
+
+> **Architecture matters.** A remote VPS orchestrator is x86_64 Linux, so the
+> `linux-amd64` / `linux-x86_64` assets below are correct. But if you are setting up
+> **this machine as the orchestrator** (Phase 1 "use this machine as the server") and
+> it is **ARM** — a Raspberry Pi or Apple-Silicon host — those downloads are wrong and
+> will fail. Detect the arch once and substitute the ARM asset:
+>
+> ```bash
+> case "$(uname -m)" in
+>   aarch64|arm64) HC_ARCH=arm64; AWS_ARCH=aarch64 ;;
+>   *)             HC_ARCH=amd64; AWS_ARCH=x86_64  ;;
+> esac
+> ```
+>
+> Use `$HC_ARCH` for the Hetzner/doctl URLs (`linux-$HC_ARCH`) and `$AWS_ARCH` for the
+> AWS CLI URL (`awscli-exe-linux-$AWS_ARCH.zip`). On macOS, prefer `brew install hcloud doctl awscli` instead of the Linux tarballs.
 
 Install the CLI for **the single provider this orchestrator will manage** — run
 only the block matching that provider. Do **not** run all four: `hcloud context
@@ -14,7 +30,9 @@ prompt where possible.
 ```bash
 # (this server is Linux x86_64, so the linux-amd64 asset is correct here)
 if ! command -v hcloud >/dev/null 2>&1; then
-  curl -fsSL https://github.com/hetznercloud/cli/releases/latest/download/hcloud-linux-amd64.tar.gz \
+  # HC_ARCH is amd64 on x86_64, arm64 on a Pi/Apple-Silicon host (see arch note above)
+  : "${HC_ARCH:=amd64}"
+  curl -fsSL "https://github.com/hetznercloud/cli/releases/latest/download/hcloud-linux-${HC_ARCH}.tar.gz" \
     | tar xz -C /usr/local/bin/
 fi
 # `hcloud context create` prompts for the token interactively, which hangs on a
@@ -32,9 +50,10 @@ hcloud server list   # verify auth works
 
 ```bash
 if ! command -v doctl >/dev/null 2>&1; then
+  : "${HC_ARCH:=amd64}"   # amd64 on x86_64, arm64 on a Pi/Apple-Silicon host
   DOCTL_VERSION=$(curl -s https://api.github.com/repos/digitalocean/doctl/releases/latest \
     | grep '"tag_name"' | cut -d'"' -f4 | tr -d 'v')
-  curl -fsSL "https://github.com/digitalocean/doctl/releases/latest/download/doctl-${DOCTL_VERSION}-linux-amd64.tar.gz" \
+  curl -fsSL "https://github.com/digitalocean/doctl/releases/latest/download/doctl-${DOCTL_VERSION}-linux-${HC_ARCH}.tar.gz" \
     | tar xz -C /usr/local/bin/
 fi
 # `doctl auth init` is interactive. Provide the token non-interactively instead.
@@ -61,7 +80,8 @@ ovhcloud login
 ```bash
 # (./aws/install writes to /usr/local/bin and needs root)
 if ! command -v aws >/dev/null 2>&1; then
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  : "${AWS_ARCH:=x86_64}"   # x86_64 on Intel/AMD, aarch64 on a Pi/Apple-Silicon host
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-${AWS_ARCH}.zip" -o "awscliv2.zip"
   unzip -o awscliv2.zip && sudo ./aws/install
 fi
 aws configure
@@ -120,7 +140,7 @@ doctl compute droplet create vibe-worker-$(date +%s) \
   --wait
 
 WORKER_IP=$(doctl compute droplet list --format Name,PublicIPv4 --no-header | grep vibe-worker | tail -1 | awk '{print $2}')
-echo "Worker ready at $WORKER_IP"
+# IP captured in $WORKER_IP for later steps — not echoed (keep IPs out of chat).
 ```
 
 ### AWS
@@ -171,17 +191,22 @@ After the droplet/instance is running, register it in your deployment platform:
 
 SSH into the worker and install whichever CLIs were selected:
 
+Install the binaries; configure auth separately (two equal paths — see [server-setup.md](server-setup.md) Step 7):
+
 ```bash
 ssh root@<WORKER_IP> bash -s << 'EOF'
 # Claude Code (if chosen)
 bun add -g @anthropic-ai/claude-code
-echo 'export ANTHROPIC_API_KEY=<your-anthropic-api-key>' >> ~/.bashrc
-
 # Codex CLI (if chosen)
 bun add -g @openai/codex
-echo 'export OPENAI_API_KEY=<your-openai-api-key>' >> ~/.bashrc
 EOF
 ```
+
+Then authenticate on the worker with **either**:
+- **Subscription:** Claude → `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`); Codex → `codex login --device-auth` or copy `~/.codex/auth.json`.
+- **API key:** `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` in the worker's `~/.bashrc`.
+
+Keep tokens/keys out of chat.
 
 > **A freshly created worker is a bare OS — it has no Bun, no deployment
 > platform, nothing.** Creating the server above only provisions it; it does
